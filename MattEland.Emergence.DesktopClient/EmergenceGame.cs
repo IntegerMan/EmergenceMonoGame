@@ -16,6 +16,7 @@ public class EmergenceGame : Game
     private Level _level;
     private ViewportData _visibleWindow;
     private Texture2D _blankTexture;
+    private bool _stateHasChanged = true;
 
     public EmergenceGame(IWorldService worldService)
     {
@@ -39,7 +40,7 @@ public class EmergenceGame : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
+        // use this.Content to load your game content here
         _blankTexture = new Texture2D(GraphicsDevice, 1, 1);
         _blankTexture.SetData([Color.White]);
     }
@@ -50,8 +51,12 @@ public class EmergenceGame : Game
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Only get visible if the game state has changed
-        _visibleWindow = _worldService.GetVisibleObjects(_player, _level, _viewportDimensions);
+        // Get any view information here
+        if (_stateHasChanged)
+        {
+            _visibleWindow = _worldService.GetVisibleObjects(_player, _level, _viewportDimensions);
+            _stateHasChanged = false;
+        }
 
         base.Update(gameTime);
     }
