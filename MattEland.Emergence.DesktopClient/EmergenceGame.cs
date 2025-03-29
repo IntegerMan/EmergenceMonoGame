@@ -40,6 +40,8 @@ public class EmergenceGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
+        _blankTexture = new Texture2D(GraphicsDevice, 1, 1);
+        _blankTexture.SetData([Color.White]);
     }
 
     protected override void Update(GameTime gameTime)
@@ -58,16 +60,9 @@ public class EmergenceGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
-
-        // TODO: Add your drawing code here
+        GraphicsDevice.Clear(Color.Black);
+        
         _spriteBatch.Begin();
-
-        if (_blankTexture == null)
-        {
-            _blankTexture = new Texture2D(GraphicsDevice, 1, 1);
-            _blankTexture.SetData([Color.White]);
-        }
         
         foreach (TileInfo tile in _visibleWindow.VisibleTiles)
         {
