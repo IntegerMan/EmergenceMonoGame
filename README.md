@@ -14,7 +14,9 @@ The following tasks are needed to complete the prototype phase:
 
 ### Graphics
 
-- [ ] Font Rendering
+- [x] Font Rendering
+- [ ] Font Right Justification
+- [ ] Custom Font Creation
 - [ ] Texture Loading
 - [ ] [Sprite](https://www.monogameextended.net/docs/features/texture-handling/sprite/)
 - [ ] [Texture Atlas](https://www.monogameextended.net/docs/features/texture-handling/texture2datlas/)
@@ -23,6 +25,7 @@ The following tasks are needed to complete the prototype phase:
 - [ ] Resizing
 - [ ] Custom Resolution
 - [ ] Maximize / Restore Support
+- [ ] Target 60 FPS
 
 ### Platform
 

@@ -10,6 +10,24 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:../bin/Debug/net9.0/MonoGame.Extended.Content.Pipeline.dll
 
 #---------------------------------- Content ---------------------------------#
+
+#begin ../../../../Downloads/GameDevAssets/Tahoma_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../Downloads/GameDevAssets/Tahoma_0.png;fonts/Tahoma_0.png
+
+#begin ../../../../Downloads/GameDevAssets/Tahoma.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:../../../../Downloads/GameDevAssets/Tahoma.fnt;fonts/Tahoma.fnt
 

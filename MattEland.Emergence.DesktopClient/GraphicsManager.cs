@@ -3,7 +3,9 @@ using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.Renderers;
 using MattEland.Emergence.World.Models;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.BitmapFonts;
 
 namespace MattEland.Emergence.DesktopClient;
 
@@ -13,9 +15,11 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     private RectangleRenderer _rectangleBrush;
     private WorldRenderer _worldRenderer;
     private SpriteBatch _spriteBatch;
+    private BitmapFont _font;
 
     private GameWindow Window => game.Window;
     private GraphicsDevice GraphicsDevice => game.GraphicsDevice;
+    private ContentManager Content => game.Content;
     
     public void Maximize()
     {
@@ -57,6 +61,7 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _rectangleBrush = new RectangleRenderer(GraphicsDevice);
         _worldRenderer = new WorldRenderer(options);
+        _font = Content.Load<BitmapFont>("fonts/Tahoma");
     }
 
     public void Draw(GameTime gameTime, ViewportData visibleWindow)
@@ -65,6 +70,7 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
         _spriteBatch.Begin();
         
         _worldRenderer.Render(_spriteBatch, _rectangleBrush, visibleWindow);
+        _spriteBatch.DrawString(_font, $"FPS: {1f / gameTime.ElapsedGameTime.TotalSeconds:0.0}", new Vector2(10, 10), Color.White);
         
         _spriteBatch.End();
     }
