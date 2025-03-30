@@ -14,7 +14,11 @@ public class RectangleRenderer : IDisposable
         _texture.SetData([Color.White]);
     }
 
-    public void Dispose() => _texture.Dispose();
+    public void Dispose()
+    {
+        _texture.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     public void Render(Rectangle rect, Color color, SpriteBatch spriteBatch)
         => spriteBatch.Draw(_texture, rect, color);

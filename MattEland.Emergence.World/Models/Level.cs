@@ -1,16 +1,19 @@
 ﻿namespace MattEland.Emergence.World.Models;
 
-public class Level
+public class Level(int width, int height)
 {
-    private readonly List<GameObject> _objects = new List<GameObject>();
-    public IEnumerable<GameObject> Objects => _objects;
+    public int Width { get; } = width;
+    public int Height { get; } = height;
 
     public FloorType GetFloorInfo(WorldPos pos)
     {
-        if (pos.X < 0 || pos.X > 10 || pos.Y < 0 || pos.Y > 10) return FloorType.Void;
+        if (pos.X < 0 || pos.X >= Width || pos.Y < 0 || pos.Y >= Height) return FloorType.Void;
         
         return FloorType.Normal;
     }
+
+    private readonly List<GameObject> _objects = new();
+    public IEnumerable<GameObject> Objects => _objects;
 
     public void AddObject(GameObject obj)
     {
