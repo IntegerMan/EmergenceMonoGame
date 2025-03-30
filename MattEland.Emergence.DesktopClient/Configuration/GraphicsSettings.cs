@@ -1,6 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace MattEland.Emergence.DesktopClient.Configuration;
 
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global",
+    Justification = "Deserialized values from configuration")]
 public class GraphicsSettings
 {
-    public bool StartFullscreen { get; set; }
+    public bool StartFullscreen { get; init; }
 }
