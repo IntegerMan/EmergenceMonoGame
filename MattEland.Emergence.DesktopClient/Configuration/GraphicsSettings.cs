@@ -8,4 +8,5 @@ public class GraphicsSettings
 {
     public bool StartFullscreen { get; init; }
     public int TileSize { get; init; }
+    public bool DebugViewport { get; init; }
 }

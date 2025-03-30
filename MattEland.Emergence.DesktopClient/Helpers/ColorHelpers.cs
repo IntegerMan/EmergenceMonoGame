@@ -6,7 +6,7 @@ namespace MattEland.Emergence.DesktopClient.Helpers;
 
 public static class ColorHelpers
 {
-    public static Color VoidColor => Color.Purple;
+    public static Color VoidColor => Color.Black;
     public static Color NormalColor => Color.Gray;
     public static Color VirusColor => Color.Magenta;
     public static Color WildernessColor => Color.DimGray;
