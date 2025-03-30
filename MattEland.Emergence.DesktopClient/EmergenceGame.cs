@@ -21,10 +21,19 @@ public class EmergenceGame : Game
     public EmergenceGame(IWorldService worldService)
     {
         _worldService = worldService;
-        _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         Window.Title = "Emergence";
+
+        // Start the window as maximized
+        DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+        _graphics = new GraphicsDeviceManager(this)
+        {
+            PreferredBackBufferWidth = displayMode.Width,
+            PreferredBackBufferHeight = displayMode.Height,
+            IsFullScreen = true
+        };
+        _graphics.ApplyChanges();
     }
 
     protected override void Initialize()
