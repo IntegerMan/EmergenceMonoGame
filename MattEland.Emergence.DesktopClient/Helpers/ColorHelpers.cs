@@ -6,14 +6,19 @@ namespace MattEland.Emergence.DesktopClient.Helpers;
 
 public static class ColorHelpers
 {
+    public static Color VoidColor => Color.Purple;
+    public static Color NormalColor => Color.Gray;
+    public static Color VirusColor => Color.Magenta;
+    public static Color WildernessColor => Color.DimGray;
+    
     public static Color GetTileColor(this TileInfo tile)
     {
         return tile.Floor switch
         {
-            FloorType.Void => Color.Black,
-            FloorType.Normal => Color.Gray,
-            FloorType.Virus => Color.Magenta,
-            FloorType.Wilderness => Color.DimGray,
+            FloorType.Void => VoidColor,
+            FloorType.Normal => NormalColor,
+            FloorType.Virus => VirusColor,
+            FloorType.Wilderness => WildernessColor,
             _ => throw new NotSupportedException($"Unknown floor type {tile.Floor}")
         };
     }

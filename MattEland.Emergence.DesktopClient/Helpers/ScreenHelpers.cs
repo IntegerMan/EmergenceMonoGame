@@ -1,11 +1,14 @@
 using MattEland.Emergence.World.Models;
+using Microsoft.Xna.Framework;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace MattEland.Emergence.DesktopClient.Helpers;
 
 public static class ScreenHelpers
 {
-    public static Rectangle ToRectangle(this WorldPos pos)
-        => new(pos.X * EmergenceGame.TileSize, pos.Y * EmergenceGame.TileSize, EmergenceGame.TileSize,
-            EmergenceGame.TileSize);
+    public static Rectangle ToRectangle(this WorldPos pos, int tileSize)
+        => new(pos.X * tileSize, pos.Y * tileSize, tileSize, tileSize);
+    
+    public static Point ToPoint(this WorldPos pos, int tileSize)
+        => new(pos.X * tileSize, pos.Y * tileSize);
 }

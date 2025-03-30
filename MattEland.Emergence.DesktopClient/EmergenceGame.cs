@@ -1,5 +1,5 @@
-﻿using MattEland.Emergence.DesktopClient.Configuration;
-using MattEland.Emergence.DesktopClient.Helpers;
+﻿using System;
+using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.Renderers;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
@@ -12,7 +12,6 @@ namespace MattEland.Emergence.DesktopClient;
 
 public class EmergenceGame : Game
 {
-    public const int TileSize = 32;
     private readonly GraphicsDeviceManager _graphics;
     private readonly ILevelGenerator _levelGenerator;
     private readonly IWorldService _worldService;
@@ -23,10 +22,13 @@ public class EmergenceGame : Game
     private bool _stateHasChanged = true;
     private ViewportDimensions _viewportDimensions;
     private ViewportData _visibleWindow;
+    private WorldRenderer _worldRenderer;
+    private readonly GraphicsSettings _graphicsOptions;
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
-        IOptionsSnapshot<GraphicsSettings> appSettings)
+        IOptionsSnapshot<GraphicsSettings> graphics)
     {
+        _graphicsOptions = graphics.Value;
         _worldService = worldService;
         _levelGenerator = levelGenerator;
         Content.RootDirectory = "Content";
@@ -36,7 +38,7 @@ public class EmergenceGame : Game
         _graphics = new GraphicsDeviceManager(this);
 
         // Optionally start the window as maximized
-        if (appSettings.Value.StartFullscreen)
+        if (_graphicsOptions.StartFullscreen)
         {
             Maximize();
         }
@@ -60,17 +62,31 @@ public class EmergenceGame : Game
     {
         _player = _worldService.CreatePlayer();
         _level = _levelGenerator.Generate(_player);
-        _viewportDimensions = new ViewportDimensions(11, 7);
 
         base.Initialize();
+    }
+
+    private void CalculateViewport()
+    {
+        int tileSize = _graphicsOptions.TileSize;
+        float width = Window.ClientBounds.Width;
+        float height = Window.ClientBounds.Height;
+        
+        _viewportDimensions = new ViewportDimensions(
+            (int)Math.Ceiling(width / tileSize),
+            (int)Math.Ceiling(height / tileSize),
+            tileSize);
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        // use this.Content to load your game content here
+        
+        CalculateViewport();
+        
+        // Load renderers and other content
         _rectangleBrush = new RectangleRenderer(GraphicsDevice);
+        _worldRenderer = new WorldRenderer(_graphicsOptions);
     }
 
     protected override void Update(GameTime gameTime)
@@ -93,17 +109,9 @@ public class EmergenceGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
         _spriteBatch.Begin();
-
-        foreach (TileInfo tile in _visibleWindow.VisibleTiles)
-        {
-            _rectangleBrush.Render(tile.Pos.ToRectangle(), tile.GetTileColor(), _spriteBatch);
-        }
-
-        foreach (GameObject obj in _visibleWindow.VisibleObjects)
-        {
-            // Draw object
-        }
-
+        
+        _worldRenderer.Render(_spriteBatch, _rectangleBrush, _visibleWindow);
+        
         _spriteBatch.End();
         base.Draw(gameTime);
     }
@@ -115,6 +123,8 @@ public class EmergenceGame : Game
             // These shouldn't be null at run time, but can be for unit tests of the Dependency Injection container
             _rectangleBrush?.Dispose();
             _spriteBatch?.Dispose();
+            
+            // Nothing in _worldRenderer to dispose at the moment
         }
 
         base.Dispose(disposing);

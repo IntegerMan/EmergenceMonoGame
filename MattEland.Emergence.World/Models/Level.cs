@@ -9,6 +9,10 @@ public class Level(int width, int height)
     {
         if (pos.X < 0 || pos.X >= width || pos.Y < 0 || pos.Y >= height) return FloorType.Void;
 
+        if (pos.X + pos.Y % 2 == 0) return FloorType.Wilderness;
+
+        if (pos.X == pos.Y) return FloorType.Virus;
+        
         return FloorType.Normal;
     }
 

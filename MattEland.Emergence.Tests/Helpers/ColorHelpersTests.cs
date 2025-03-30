@@ -17,7 +17,7 @@ public class ColorHelpersTests
         Color color = tile.GetTileColor();
 
         // Assert
-        color.ShouldBe(Color.Black);
+        color.ShouldBe(ColorHelpers.VoidColor);
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class ColorHelpersTests
         Color color = tile.GetTileColor();
 
         // Assert
-        color.ShouldBe(Color.Gray);
+        color.ShouldBe(ColorHelpers.NormalColor);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class ColorHelpersTests
         Color color = tile.GetTileColor();
 
         // Assert
-        color.ShouldBe(Color.Magenta);
+        color.ShouldBe(ColorHelpers.VirusColor);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class ColorHelpersTests
         Color color = tile.GetTileColor();
 
         // Assert
-        color.ShouldBe(Color.DimGray);
+        color.ShouldBe(ColorHelpers.WildernessColor);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class ColorHelpersTests
             // Arrange
             TileInfo tile = new()
             {
-                Floor = (FloorType)999,
+                Floor = (FloorType)(-50),
                 Pos = new WorldPos(0, 0)
             };
 
