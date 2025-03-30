@@ -4,6 +4,10 @@ Emergence is a roguelike game development project being developed by [Matt Eland
 
 [![Qodana](https://github.com/IntegerMan/EmergenceMonoGame/actions/workflows/qodana_code_quality.yml/badge.svg)](https://qodana.cloud/projects/Dbm8Z/reports/eP0bD)
 
+## License
+
+Emergence © 2025 by [Matt Eland](https://matteland.dev) is licensed under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/?ref=chooser-v1)
+
 ## Tasks
 
 The following tasks are needed to complete the prototype phase:
