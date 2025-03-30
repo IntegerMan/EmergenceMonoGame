@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace MattEland.Emergence.World.Models;
 
 public class ViewportData

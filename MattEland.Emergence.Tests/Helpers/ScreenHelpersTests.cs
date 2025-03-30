@@ -1,11 +1,9 @@
-using MattEland.Emergence.DesktopClient;
-
 namespace MattEland.Emergence.Tests.Helpers;
 
 [TestSubject(typeof(ScreenHelpers))]
 public class ScreenHelpersTests
 {
-    const int TileSize = 32;
+    private const int TileSize = 32;
 
     [Fact]
     public void ToRectangle_ReturnsCorrectRectangle_ForPositiveCoordinates()
