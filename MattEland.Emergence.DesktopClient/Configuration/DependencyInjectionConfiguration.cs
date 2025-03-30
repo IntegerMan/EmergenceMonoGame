@@ -10,7 +10,7 @@ public static class DependencyInjectionConfiguration
     {
         ServiceCollection services = new ServiceCollection();
 
-        services.AddSingleton<IConfiguration>(configuration);
+        services.AddSingleton(configuration);
         services.AddScoped<EmergenceGame>();
         services.AddScoped<IWorldService, WorldService>();
         // Bind GraphicsSettings to the "Graphics" node in configuration
