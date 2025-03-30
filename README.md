@@ -2,6 +2,8 @@
 
 Emergence is a roguelike game development project being developed by [Matt Eland](https://MattEland.dev) using MonoGame and C#.
 
+[![Qodana](https://github.com/IntegerMan/EmergenceMonoGame/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/IntegerMan/EmergenceMonoGame/actions/workflows/qodana_code_quality.yml)
+
 ## Tasks
 
 The following tasks are needed to complete the prototype phase:
