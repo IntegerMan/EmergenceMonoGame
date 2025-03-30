@@ -11,7 +11,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        IConfiguration configuration = OptionsConfiguration.BuildConfiguration();
+        IConfiguration configuration = OptionsConfiguration.BuildConfiguration(args);
         using ServiceProvider provider = DependencyInjectionConfiguration.BuildServiceProvider(configuration);
 
         using EmergenceGame game = provider.GetRequiredService<EmergenceGame>();
