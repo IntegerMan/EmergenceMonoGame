@@ -1,4 +1,5 @@
-﻿using MattEland.Emergence.World.Models;
+﻿using MattEland.Emergence.DesktopClient.Configuration;
+using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;

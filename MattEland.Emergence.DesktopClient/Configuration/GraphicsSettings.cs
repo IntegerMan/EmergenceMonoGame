@@ -1,4 +1,4 @@
-namespace MattEland.Emergence.DesktopClient;
+namespace MattEland.Emergence.DesktopClient.Configuration;
 
 public class GraphicsSettings
 {

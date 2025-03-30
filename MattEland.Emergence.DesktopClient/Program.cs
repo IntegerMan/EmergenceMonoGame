@@ -1,4 +1,5 @@
 ﻿using MattEland.Emergence.DesktopClient;
+using MattEland.Emergence.DesktopClient.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

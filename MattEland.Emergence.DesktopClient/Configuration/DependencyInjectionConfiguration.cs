@@ -2,7 +2,7 @@ using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MattEland.Emergence.DesktopClient;
+namespace MattEland.Emergence.DesktopClient.Configuration;
 
 public static class DependencyInjectionConfiguration
 {
