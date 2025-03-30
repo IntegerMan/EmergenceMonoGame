@@ -29,14 +29,11 @@ public class WorldService : IWorldService
     }
 
 
-    public Player CreatePlayer()
-    {
-        return new Player(new WorldPos(0, 0));
-    }
+    public Player CreatePlayer() => new(new WorldPos(0, 0));
 
     public Level CreateLevel(Player player)
     {
-        Level level = new Level();
+        Level level = new Level(30, 30);
         player.Pos = new WorldPos(2, 3);
         level.AddObject(player);
         
@@ -52,7 +49,7 @@ public class WorldService : IWorldService
         {
             for (int x = upperLeft.X; x <= lowerRight.X; x++)
             {
-                WorldPos pos = new WorldPos(x, y);
+                WorldPos pos = new(x, y);
                 visibleTiles.Add(new TileInfo
                 {
                     Pos = pos,
