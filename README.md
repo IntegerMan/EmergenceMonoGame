@@ -14,6 +14,7 @@ The following tasks are needed to complete the prototype phase:
 
 ### Graphics
 
+- [x] Assets Repository
 - [x] Font Rendering
 - [ ] Font Right Justification
 - [ ] Custom Font Creation

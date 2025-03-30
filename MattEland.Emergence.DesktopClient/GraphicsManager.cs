@@ -62,6 +62,10 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
         _rectangleBrush = new RectangleRenderer(GraphicsDevice);
         _worldRenderer = new WorldRenderer(options);
         _font = Content.Load<BitmapFont>("fonts/Tahoma");
+        
+                
+        // Target 60 FPS
+        game.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / options.TargetFPS);
     }
 
     public void Draw(GameTime gameTime, ViewportData visibleWindow)
