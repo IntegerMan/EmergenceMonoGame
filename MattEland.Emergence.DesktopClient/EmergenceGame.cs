@@ -1,11 +1,8 @@
-﻿using System;
-using MattEland.Emergence.DesktopClient.Configuration;
-using MattEland.Emergence.DesktopClient.Renderers;
+﻿using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MattEland.Emergence.DesktopClient;
 
@@ -15,26 +12,21 @@ public class EmergenceGame : Game
     private readonly IWorldService _worldService;
     private Level _level;
     private Player _player;
-    private RectangleRenderer _rectangleBrush;
-    private SpriteBatch _spriteBatch;
-    private WorldRenderer _worldRenderer;
-    private readonly GraphicsSettings _graphicsOptions;
     private GameManager _gameManager;
     private readonly GraphicsManager _graphicsManager;
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator, IOptionsSnapshot<GraphicsSettings> graphics)
     {
-        _graphicsOptions = graphics.Value;
+        GraphicsSettings graphicsOptions = graphics.Value;
         _worldService = worldService;
         _levelGenerator = levelGenerator;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         Window.Title = "Emergence";
 
-        _graphicsManager = new GraphicsManager(this, _graphicsOptions);
-
-        // Optionally start the window as maximized
-        if (_graphicsOptions.StartFullscreen)
+        // Set up graphics management
+        _graphicsManager = new GraphicsManager(this, graphicsOptions);
+        if (graphicsOptions.StartFullscreen)
         {
             _graphicsManager.Maximize();
         }
@@ -52,12 +44,10 @@ public class EmergenceGame : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
         _gameManager.Viewport = _graphicsManager.CalculateViewport();
         
         // Load renderers and other content
-        _rectangleBrush = new RectangleRenderer(GraphicsDevice);
-        _worldRenderer = new WorldRenderer(_graphicsOptions);
+        _graphicsManager.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
@@ -73,12 +63,8 @@ public class EmergenceGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Black);
-        _spriteBatch.Begin();
+        _graphicsManager.Draw(gameTime, _gameManager.VisibleWindow);
         
-        _worldRenderer.Render(_spriteBatch, _rectangleBrush, _gameManager.VisibleWindow);
-        
-        _spriteBatch.End();
         base.Draw(gameTime);
     }
 
@@ -86,10 +72,7 @@ public class EmergenceGame : Game
     {
         if (disposing)
         {
-            // These shouldn't be null at run time, but can be for unit tests of the Dependency Injection container
             _graphicsManager?.Dispose();
-            _rectangleBrush?.Dispose();
-            _spriteBatch?.Dispose();
         }
 
         base.Dispose(disposing);

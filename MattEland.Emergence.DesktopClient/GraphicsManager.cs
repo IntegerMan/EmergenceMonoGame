@@ -1,5 +1,6 @@
 using System;
 using MattEland.Emergence.DesktopClient.Configuration;
+using MattEland.Emergence.DesktopClient.Renderers;
 using MattEland.Emergence.World.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,8 +10,12 @@ namespace MattEland.Emergence.DesktopClient;
 public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
 {
     private readonly GraphicsDeviceManager _graphics = new(game);
+    private RectangleRenderer _rectangleBrush;
+    private WorldRenderer _worldRenderer;
+    private SpriteBatch _spriteBatch;
 
     private GameWindow Window => game.Window;
+    private GraphicsDevice GraphicsDevice => game.GraphicsDevice;
     
     public void Maximize()
     {
@@ -41,7 +46,26 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     public void Dispose()
     {
         _graphics?.Dispose();
+        _rectangleBrush?.Dispose();
+        _spriteBatch?.Dispose();
         
         GC.SuppressFinalize(this);
+    }
+
+    public void LoadContent()
+    {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _rectangleBrush = new RectangleRenderer(GraphicsDevice);
+        _worldRenderer = new WorldRenderer(options);
+    }
+
+    public void Draw(GameTime gameTime, ViewportData visibleWindow)
+    {
+        GraphicsDevice.Clear(Color.Black);
+        _spriteBatch.Begin();
+        
+        _worldRenderer.Render(_spriteBatch, _rectangleBrush, visibleWindow);
+        
+        _spriteBatch.End();
     }
 }
