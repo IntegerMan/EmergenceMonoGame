@@ -21,15 +21,11 @@ public class EmergenceGame : Game
     private Player _player;
     private RectangleRenderer _rectangleBrush;
     private SpriteBatch _spriteBatch;
-    private bool _stateHasChanged = true;
-    private ViewportDimensions _viewportDimensions;
-    private ViewportData _visibleWindow;
     private WorldRenderer _worldRenderer;
     private readonly GraphicsSettings _graphicsOptions;
-    private PlayerController _controller;
+    private GameManager _gameManager;
 
-    public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
-        IOptionsSnapshot<GraphicsSettings> graphics)
+    public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator, IOptionsSnapshot<GraphicsSettings> graphics)
     {
         _graphicsOptions = graphics.Value;
         _worldService = worldService;
@@ -64,8 +60,8 @@ public class EmergenceGame : Game
     protected override void Initialize()
     {
         _player = _worldService.CreatePlayer();
-        _controller = new PlayerController(_player, _worldService);
         _level = _levelGenerator.Generate(_player);
+        _gameManager = new GameManager(_worldService, _player, _level);
 
         base.Initialize();
     }
@@ -76,7 +72,7 @@ public class EmergenceGame : Game
         float width = Window.ClientBounds.Width;
         float height = Window.ClientBounds.Height;
         
-        _viewportDimensions = new ViewportDimensions(
+        _gameManager.Viewport = new ViewportDimensions(
             (int)Math.Ceiling(width / tileSize),
             (int)Math.Ceiling(height / tileSize),
             tileSize);
@@ -95,21 +91,10 @@ public class EmergenceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        KeyboardExtended.Update();
-        KeyboardStateExtended keyState = KeyboardExtended.GetState();
-
-        if (keyState.WasKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+        bool exitRequested = _gameManager.Update(gameTime);
+        if (exitRequested)
         {
             Exit();
-        }
-
-        _stateHasChanged = _controller.Update(keyState) || _stateHasChanged;
-        
-        // Get any view information here
-        if (_stateHasChanged)
-        {
-            _visibleWindow = _worldService.GetVisibleObjects(_player, _level, _viewportDimensions);
-            _stateHasChanged = false;
         }
 
         base.Update(gameTime);
@@ -120,7 +105,7 @@ public class EmergenceGame : Game
         GraphicsDevice.Clear(Color.Black);
         _spriteBatch.Begin();
         
-        _worldRenderer.Render(_spriteBatch, _rectangleBrush, _visibleWindow);
+        _worldRenderer.Render(_spriteBatch, _rectangleBrush, _gameManager.VisibleWindow);
         
         _spriteBatch.End();
         base.Draw(gameTime);

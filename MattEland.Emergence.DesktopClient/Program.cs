@@ -1,7 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using MattEland.Emergence.DesktopClient.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 namespace MattEland.Emergence.DesktopClient;
 
@@ -11,10 +13,17 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        IConfiguration configuration = OptionsConfiguration.BuildConfiguration(args);
-        using ServiceProvider provider = DependencyInjectionConfiguration.BuildServiceProvider(configuration);
+        try
+        {
+            IConfiguration configuration = OptionsConfiguration.BuildConfiguration(args);
+            using ServiceProvider provider = DependencyInjectionConfiguration.BuildServiceProvider(configuration);
 
-        using EmergenceGame game = provider.GetRequiredService<EmergenceGame>();
-        game.Run();
+            using EmergenceGame game = provider.GetRequiredService<EmergenceGame>();
+            game.Run();
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+        }
     }
 }

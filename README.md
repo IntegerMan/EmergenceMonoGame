@@ -72,5 +72,6 @@ The following tasks are needed to complete the prototype phase:
 - [ ] Joystick Input Demo
 
 ### Audio
+
 - [ ] Sound Effects
 - [ ] Music
