@@ -1,4 +1,6 @@
 ﻿using MattEland.Emergence.DesktopClient.Configuration;
+using MattEland.Emergence.DesktopClient.Helpers;
+using MattEland.Emergence.DesktopClient.Renderers;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
@@ -13,9 +15,9 @@ public class EmergenceGame : Game
     public const int TileSize = 32;
     private readonly GraphicsDeviceManager _graphics;
     private readonly IWorldService _worldService;
-    private Texture2D _blankTexture;
     private Level _level;
     private Player _player;
+    private RectangleRenderer _rectangleBrush;
     private SpriteBatch _spriteBatch;
     private bool _stateHasChanged = true;
     private ViewportDimensions _viewportDimensions;
@@ -65,8 +67,7 @@ public class EmergenceGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // use this.Content to load your game content here
-        _blankTexture = new Texture2D(GraphicsDevice, 1, 1);
-        _blankTexture.SetData([Color.White]);
+        _rectangleBrush = new RectangleRenderer(GraphicsDevice);
     }
 
     protected override void Update(GameTime gameTime)
@@ -88,13 +89,11 @@ public class EmergenceGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
-
         _spriteBatch.Begin();
 
         foreach (TileInfo tile in _visibleWindow.VisibleTiles)
         {
-            Rectangle tileRect = new Rectangle(tile.Pos.X * TileSize, tile.Pos.Y * TileSize, TileSize, TileSize);
-            _spriteBatch.Draw(_blankTexture, tileRect, tile.GetTileColor());
+            _rectangleBrush.Render(tile.Pos.ToRectangle(), tile.GetTileColor(), _spriteBatch);
         }
 
         foreach (GameObject obj in _visibleWindow.VisibleObjects)
@@ -103,7 +102,17 @@ public class EmergenceGame : Game
         }
 
         _spriteBatch.End();
-
         base.Draw(gameTime);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _rectangleBrush.Dispose();
+            _spriteBatch.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

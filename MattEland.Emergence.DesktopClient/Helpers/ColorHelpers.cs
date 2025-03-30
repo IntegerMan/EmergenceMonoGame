@@ -1,7 +1,7 @@
 using MattEland.Emergence.World.Models;
 using Microsoft.Xna.Framework;
 
-namespace MattEland.Emergence.DesktopClient;
+namespace MattEland.Emergence.DesktopClient.Helpers;
 
 public static class ColorHelpers
 {
