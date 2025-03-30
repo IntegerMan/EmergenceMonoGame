@@ -13,6 +13,9 @@
     <ItemGroup>
         <None Remove="Icon.ico"/>
         <None Remove="Icon.bmp"/>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Icon.ico">
@@ -23,7 +26,11 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.3"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3"/>
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.2.1105"/>
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.2.1105"/>
     </ItemGroup>

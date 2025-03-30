@@ -1,5 +1,6 @@
 ﻿using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
+using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,31 +9,44 @@ namespace MattEland.Emergence.DesktopClient;
 
 public class EmergenceGame : Game
 {
+    public const int TileSize = 32;
+    private readonly GraphicsDeviceManager _graphics;
     private readonly IWorldService _worldService;
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
-    private ViewportDimensions _viewportDimensions;
-    private Player _player;
-    private Level _level;
-    private ViewportData _visibleWindow;
     private Texture2D _blankTexture;
+    private Level _level;
+    private Player _player;
+    private SpriteBatch _spriteBatch;
     private bool _stateHasChanged = true;
+    private ViewportDimensions _viewportDimensions;
+    private ViewportData _visibleWindow;
 
-    public EmergenceGame(IWorldService worldService)
+    public EmergenceGame(IWorldService worldService, IOptionsSnapshot<GraphicsSettings> appSettings)
     {
         _worldService = worldService;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         Window.Title = "Emergence";
 
-        // Start the window as maximized
-        DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
-        _graphics = new GraphicsDeviceManager(this)
+        _graphics = new GraphicsDeviceManager(this);
+
+        // Optionally start the window as maximized
+        if (appSettings.Value.StartFullscreen)
         {
-            PreferredBackBufferWidth = displayMode.Width,
-            PreferredBackBufferHeight = displayMode.Height,
-            IsFullScreen = true
-        };
+            Maximize();
+        }
+    }
+
+    private void Maximize()
+    {
+        // Tell the OS we don't want to change the resolution. This makes the resize performant on Linux
+        _graphics.HardwareModeSwitch = false;
+        Window.IsBorderless = true;
+
+        // Change the resolution to the current display mode, making the app fullscreen
+        DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+        _graphics.PreferredBackBufferWidth = displayMode.Width;
+        _graphics.PreferredBackBufferHeight = displayMode.Height;
+        _graphics.IsFullScreen = true;
         _graphics.ApplyChanges();
     }
 
@@ -70,25 +84,23 @@ public class EmergenceGame : Game
         base.Update(gameTime);
     }
 
-    public const int TileSize = 32;
-
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
-        
+
         _spriteBatch.Begin();
-        
+
         foreach (TileInfo tile in _visibleWindow.VisibleTiles)
         {
             Rectangle tileRect = new Rectangle(tile.Pos.X * TileSize, tile.Pos.Y * TileSize, TileSize, TileSize);
             _spriteBatch.Draw(_blankTexture, tileRect, tile.GetTileColor());
         }
-        
+
         foreach (GameObject obj in _visibleWindow.VisibleObjects)
         {
             // Draw object
         }
-        
+
         _spriteBatch.End();
 
         base.Draw(gameTime);
