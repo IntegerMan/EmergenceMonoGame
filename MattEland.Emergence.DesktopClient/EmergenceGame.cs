@@ -1,5 +1,6 @@
 ﻿using System;
 using MattEland.Emergence.DesktopClient.Configuration;
+using MattEland.Emergence.DesktopClient.Input;
 using MattEland.Emergence.DesktopClient.Renderers;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 
 namespace MattEland.Emergence.DesktopClient;
 
@@ -24,6 +26,7 @@ public class EmergenceGame : Game
     private ViewportData _visibleWindow;
     private WorldRenderer _worldRenderer;
     private readonly GraphicsSettings _graphicsOptions;
+    private PlayerController _controller;
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
         IOptionsSnapshot<GraphicsSettings> graphics)
@@ -61,6 +64,7 @@ public class EmergenceGame : Game
     protected override void Initialize()
     {
         _player = _worldService.CreatePlayer();
+        _controller = new PlayerController(_player, _worldService);
         _level = _levelGenerator.Generate(_player);
 
         base.Initialize();
@@ -91,10 +95,16 @@ public class EmergenceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        KeyboardExtended.Update();
+        KeyboardStateExtended keyState = KeyboardExtended.GetState();
 
+        if (keyState.WasKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+        {
+            Exit();
+        }
+
+        _stateHasChanged = _controller.Update(keyState) || _stateHasChanged;
+        
         // Get any view information here
         if (_stateHasChanged)
         {

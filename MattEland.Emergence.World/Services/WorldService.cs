@@ -4,6 +4,14 @@ namespace MattEland.Emergence.World.Services;
 
 public class WorldService : IWorldService
 {
+    public bool MoveEntity(GameObject entity, Direction direction)
+    {
+        // This should eventually need to worry about collisions, bump combat, level geometry, etc.
+        entity.Pos = entity.Pos.Offset(direction);
+
+        return true; // false if invalid
+    }
+    
     public ViewportData GetVisibleObjects(Player perspective, Level level, ViewportDimensions viewport)
     {
         // Figure out upper left and lower right corners of the viewport

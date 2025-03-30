@@ -1,3 +1,4 @@
+using System;
 using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.Helpers;
 using MattEland.Emergence.World.Models;
@@ -12,6 +13,8 @@ public class WorldRenderer(GraphicsSettings graphicsSettings)
 
     public void Render(SpriteBatch batch, RectangleRenderer rectangleRenderer, ViewportData visibleWindow)
     {
+        ArgumentNullException.ThrowIfNull(visibleWindow);
+        
         int tileSize = graphicsSettings.TileSize;
         Point offset = visibleWindow.UpperLeft.ToOffset(tileSize);
         

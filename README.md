@@ -16,9 +16,13 @@ The following tasks are needed to complete the prototype phase:
 
 - [ ] Font Rendering
 - [ ] Texture Loading
-- [ ] Sprite Sheets
+- [ ] [Sprite](https://www.monogameextended.net/docs/features/texture-handling/sprite/)
+- [ ] [Texture Atlas](https://www.monogameextended.net/docs/features/texture-handling/texture2datlas/)
 - [ ] Lighting Demo
 - [ ] Shaders
+- [ ] Resizing
+- [ ] Custom Resolution
+- [ ] Maximize / Restore Support
 
 ### Platform
 
@@ -28,23 +32,44 @@ The following tasks are needed to complete the prototype phase:
 
 ### Core
 
+- [ ] [Entity Component System](https://www.monogameextended.net/docs/features/entities/)
+- [ ] [Camera](https://www.monogameextended.net/docs/features/camera/orthographic-camera/)
 - [ ] Pathfinding Demo
 - [ ] Line of Sight Demo
-- [ ] Object Pooling Demo
+- [ ] [Object Pooling](https://www.monogameextended.net/docs/features/object-pooling/) Demo
+- [ ] Options that load / save from disk
 
 ### Animation
+
 - [ ] Animation Proof of Concept
 - [ ] Sequential Animations Operations Demo
 
+### Gameplay
+
+- [ ] Wall collisions
+- [ ] Bump combat
+- [ ] Abilities
+
 ### Level Generation
+
 - [ ] Prefab system
 - [ ] Procedural Generation of Levels
-- [ ] Bump combat
+
+### User Interface
+
+- [ ] Command Bar
+- [ ] Health / Mana Display
+- [ ] Escape Menu
+- [ ] Multi-Part Commands
+- [ ] Minimap
 
 ### Input
+
+- [x] Keyboard Input Management
+- [x] Movement
+- [ ] [Input Listener](https://www.monogameextended.net/docs/features/input/inputlistener/)
 - [ ] Mouse / tile selection
 - [ ] Joystick Input Demo
-- [ ] Movement
 
 ### Audio
 - [ ] Sound Effects
