@@ -7,7 +7,11 @@ public class ColorHelpersTests
     public void GetTileColor_ReturnsBlack_ForVoidFloor()
     {
         // Arrange
-        TileInfo tile = new() { Floor = FloorType.Void };
+        TileInfo tile = new()
+        {
+            Floor = FloorType.Void,
+            Pos = new WorldPos(0, 0)
+        };
 
         // Act
         Color color = tile.GetTileColor();
@@ -20,7 +24,11 @@ public class ColorHelpersTests
     public void GetTileColor_ReturnsGray_ForNormalFloor()
     {
         // Arrange
-        TileInfo tile = new() { Floor = FloorType.Normal };
+        TileInfo tile = new()
+        {
+            Floor = FloorType.Normal,
+            Pos = new WorldPos(0, 0)
+        };
 
         // Act
         Color color = tile.GetTileColor();
@@ -33,7 +41,11 @@ public class ColorHelpersTests
     public void GetTileColor_ReturnsMagenta_ForVirusFloor()
     {
         // Arrange
-        TileInfo tile = new() { Floor = FloorType.Virus };
+        TileInfo tile = new()
+        {
+            Floor = FloorType.Virus,
+            Pos = new WorldPos(0, 0)
+        };
 
         // Act
         Color color = tile.GetTileColor();
@@ -46,7 +58,11 @@ public class ColorHelpersTests
     public void GetTileColor_ReturnsDimGray_ForWildernessFloor()
     {
         // Arrange
-        TileInfo tile = new() { Floor = FloorType.Wilderness };
+        TileInfo tile = new()
+        {
+            Floor = FloorType.Wilderness,
+            Pos = new WorldPos(0, 0)
+        };
 
         // Act
         Color color = tile.GetTileColor();
@@ -61,7 +77,11 @@ public class ColorHelpersTests
         Should.Throw<NotSupportedException>(() =>
         {
             // Arrange
-            TileInfo tile = new() { Floor = (FloorType)999 };
+            TileInfo tile = new()
+            {
+                Floor = (FloorType)999,
+                Pos = new WorldPos(0, 0)
+            };
 
             // Act
             tile.GetTileColor();
