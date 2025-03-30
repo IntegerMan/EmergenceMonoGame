@@ -1,3 +1,4 @@
+using System;
 using MattEland.Emergence.World.Models;
 using Microsoft.Xna.Framework;
 
@@ -13,7 +14,7 @@ public static class ColorHelpers
             FloorType.Normal => Color.Gray,
             FloorType.Virus => Color.Magenta,
             FloorType.Wilderness => Color.DimGray,
-            _ => Color.White
+            _ => throw new NotSupportedException($"Unknown floor type {tile.Floor}")
         };
     }
 }
