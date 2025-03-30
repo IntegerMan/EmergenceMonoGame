@@ -6,5 +6,4 @@ public interface IWorldService
 {
     ViewportData GetVisibleObjects(Player perspective, Level level, ViewportDimensions viewport);
     Player CreatePlayer();
-    Level CreateLevel(Player player);
 }

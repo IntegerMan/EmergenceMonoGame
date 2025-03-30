@@ -24,15 +24,6 @@ public class WorldService : IWorldService
 
     public Player CreatePlayer() => new(new WorldPos(0, 0));
 
-    public Level CreateLevel(Player player)
-    {
-        Level level = new(30, 30);
-        player.Pos = new WorldPos(2, 3);
-        level.AddObject(player);
-
-        return level;
-    }
-
     private static List<TileInfo> PopulateVisibleTiles(Level level, ViewportDimensions viewport, WorldPos upperLeft,
         WorldPos lowerRight)
     {

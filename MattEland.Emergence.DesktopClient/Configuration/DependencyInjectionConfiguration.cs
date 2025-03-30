@@ -8,11 +8,12 @@ public static class DependencyInjectionConfiguration
 {
     public static ServiceProvider BuildServiceProvider(IConfiguration configuration)
     {
-        ServiceCollection services = new ServiceCollection();
+        ServiceCollection services = new();
 
-        services.AddSingleton(configuration);
         services.AddScoped<EmergenceGame>();
         services.AddScoped<IWorldService, WorldService>();
+        services.AddScoped<ILevelGenerator, TestLevelGenerator>();
+
         // Bind GraphicsSettings to the "Graphics" node in configuration
         services.Configure<GraphicsSettings>(options => configuration.GetSection("Graphics").Bind(options));
 

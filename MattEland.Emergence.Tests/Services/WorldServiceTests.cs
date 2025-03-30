@@ -18,22 +18,6 @@ public class WorldServiceTests
     }
 
     [Fact]
-    public void CreateLevel_ShouldInitializeLevelWithPlayer()
-    {
-        // Arrange
-        WorldService service = new();
-        Player player = service.CreatePlayer();
-
-        // Act
-        Level level = service.CreateLevel(player);
-
-        // Assert
-        level.ShouldNotBeNull();
-        level.Objects.ShouldContain(player);
-        player.Pos.ShouldBe(new WorldPos(2, 3));
-    }
-
-    [Fact]
     public void GetVisibleObjects_ShouldReturnCorrectViewportData()
     {
         // Arrange

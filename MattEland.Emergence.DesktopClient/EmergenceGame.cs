@@ -14,6 +14,7 @@ public class EmergenceGame : Game
 {
     public const int TileSize = 32;
     private readonly GraphicsDeviceManager _graphics;
+    private readonly ILevelGenerator _levelGenerator;
     private readonly IWorldService _worldService;
     private Level _level;
     private Player _player;
@@ -23,9 +24,11 @@ public class EmergenceGame : Game
     private ViewportDimensions _viewportDimensions;
     private ViewportData _visibleWindow;
 
-    public EmergenceGame(IWorldService worldService, IOptionsSnapshot<GraphicsSettings> appSettings)
+    public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
+        IOptionsSnapshot<GraphicsSettings> appSettings)
     {
         _worldService = worldService;
+        _levelGenerator = levelGenerator;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         Window.Title = "Emergence";
@@ -56,7 +59,7 @@ public class EmergenceGame : Game
     protected override void Initialize()
     {
         _player = _worldService.CreatePlayer();
-        _level = _worldService.CreateLevel(_player);
+        _level = _levelGenerator.Generate(_player);
         _viewportDimensions = new ViewportDimensions(11, 7);
 
         base.Initialize();
@@ -109,8 +112,9 @@ public class EmergenceGame : Game
     {
         if (disposing)
         {
-            _rectangleBrush.Dispose();
-            _spriteBatch.Dispose();
+            // These shouldn't be null at run time, but can be for unit tests of the Dependency Injection container
+            _rectangleBrush?.Dispose();
+            _spriteBatch?.Dispose();
         }
 
         base.Dispose(disposing);
