@@ -8,3 +8,5 @@ exclude:
   - name: All
     paths:
       - MattEland.Emergence.DesktopClient/app.manifest
+  - name: SuggestVarOrType_SimpleTypes
+
