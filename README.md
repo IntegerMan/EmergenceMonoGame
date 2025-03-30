@@ -12,20 +12,40 @@ Emergence © 2025 by [Matt Eland](https://matteland.dev) is licensed under [CC B
 
 The following tasks are needed to complete the prototype phase:
 
+### Graphics
+
 - [ ] Font Rendering
 - [ ] Texture Loading
-- [ ] String Resource Locations
-- [ ] Animation Proof of Concept
-- [ ] Squential Operations Demo
-- [ ] Pathfinding Demo
+- [ ] Sprite Sheets
 - [ ] Lighting Demo
+- [ ] Shaders
+
+### Platform
+
+- [ ] String Resource Locations
+- [ ] Logging
+- [ ] Crash Logs
+
+### Core
+
+- [ ] Pathfinding Demo
 - [ ] Line of Sight Demo
+- [ ] Object Pooling Demo
+
+### Animation
+- [ ] Animation Proof of Concept
+- [ ] Sequential Animations Operations Demo
+
+### Level Generation
 - [ ] Prefab system
+- [ ] Procedural Generation of Levels
 - [ ] Bump combat
+
+### Input
 - [ ] Mouse / tile selection
 - [ ] Joystick Input Demo
 - [ ] Movement
-- [ ] Sprite Sheets
+
+### Audio
 - [ ] Sound Effects
 - [ ] Music
-- [ ] Procedural Generation of Levels
