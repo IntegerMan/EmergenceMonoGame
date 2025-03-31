@@ -10,7 +10,7 @@ public class GameManager(IWorldService worldService)
 
     public bool ExitRequested { get; set; }
     
-    public void Update(GameTime gameTime)
+    public void Update()
     {
         if (_isVisibleRegionDirty && Viewport is not null)
         {

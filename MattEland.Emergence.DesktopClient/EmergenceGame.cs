@@ -18,13 +18,14 @@ public class EmergenceGame : Game
 {
     private readonly GameManager _gameManager;
     private readonly GraphicsManager _graphicsManager;
-    private ISystem<float>? _renderSystem;
-    private ISystem<float>? _updateSystem;
+    
+    private ParallelSystem<float>? _updateSystem;
+    private SequentialSystem<float>? _renderSystem;
+    
     private readonly DefaultEcs.World _world;
     private SpriteBatch? _spriteBatch;
 
-    public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
-        IOptionsSnapshot<GraphicsSettings> graphics)
+    public EmergenceGame(IWorldService worldService, IOptionsSnapshot<GraphicsSettings> graphics)
     {
         GraphicsSettings graphicsOptions = graphics.Value;
         Content.RootDirectory = "Content";
@@ -81,7 +82,9 @@ public class EmergenceGame : Game
 
         InitializeEntityComponentSystem();
 
+        // Set the initial contents of the viewport
         _gameManager.Viewport = _graphicsManager.CalculateViewport();
+        _gameManager.Update();
 
         // Load renderers and other content
         _graphicsManager.LoadContent();
@@ -93,7 +96,7 @@ public class EmergenceGame : Game
         KeyboardExtended.Update();
         _updateSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-        _gameManager.Update(gameTime);
+        _gameManager.Update();
         if (_gameManager.ExitRequested)
         {
             Exit();
