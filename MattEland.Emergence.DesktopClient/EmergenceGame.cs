@@ -9,18 +9,15 @@ namespace MattEland.Emergence.DesktopClient;
 
 public class EmergenceGame : Game
 {
-    private readonly ILevelGenerator _levelGenerator;
     private readonly IWorldService _worldService;
-    private Level? _level;
-    private Player? _player;
-    private GameManager? _gameManager;
+    private readonly GameManager _gameManager;
     private readonly GraphicsManager _graphicsManager;
+    private readonly Player _player;
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator, IOptionsSnapshot<GraphicsSettings> graphics)
     {
-        GraphicsSettings graphicsOptions = graphics.Value;
         _worldService = worldService;
-        _levelGenerator = levelGenerator;
+        GraphicsSettings graphicsOptions = graphics.Value;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         Window.Title = "Emergence";
@@ -31,13 +28,14 @@ public class EmergenceGame : Game
         {
             _graphicsManager.Maximize();
         }
+        
+        _player = worldService.CreatePlayer();
+        Level level = levelGenerator.Generate(_player);
+        _gameManager = new GameManager(worldService, _player, level);
     }
 
     protected override void Initialize()
     {
-        _player = _worldService.CreatePlayer();
-        _level = _levelGenerator.Generate(_player);
-        _gameManager = new GameManager(_worldService, _player, _level);
 
         // Configure our Entity Component System (ECS)
         Components.Add(ConfigureEntityComponentSystem());
@@ -50,6 +48,7 @@ public class EmergenceGame : Game
             .AddSystem(new WorldRenderer(_gameManager, _graphicsManager))
             .AddSystem(new FramesPerSecondRenderer(_graphicsManager))
             .AddSystem(new VersionNumberRenderer(_graphicsManager))
+            .AddSystem(new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService))
             .Build();
 
     protected override void LoadContent()
@@ -62,8 +61,8 @@ public class EmergenceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        bool exitRequested = _gameManager!.Update(gameTime);
-        if (exitRequested)
+        _gameManager.Update(gameTime);
+        if (_gameManager.ExitRequested)
         {
             Exit();
         }
