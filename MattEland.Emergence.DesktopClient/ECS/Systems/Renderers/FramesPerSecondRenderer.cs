@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.BitmapFonts;
 
-namespace MattEland.Emergence.DesktopClient.ECS.Systems;
+namespace MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 
 /// <summary>
 /// A system responsible for rendering the current frames per second (FPS) on the screen.

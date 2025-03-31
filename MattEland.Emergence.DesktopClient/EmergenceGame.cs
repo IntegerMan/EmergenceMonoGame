@@ -2,6 +2,8 @@
 using DefaultEcs.Threading;
 using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.ECS.Systems;
+using MattEland.Emergence.DesktopClient.ECS.Systems.Input;
+using MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
@@ -54,7 +56,7 @@ public class EmergenceGame : Game
             //new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService),
         );
         _renderSystem = new SequentialSystem<float>(
-            //new WorldRenderer(_gameManager, _graphicsManager),
+            new WorldRenderer(world),
             new VersionNumberRenderer(world),
             new FramesPerSecondRenderer(world)
         );

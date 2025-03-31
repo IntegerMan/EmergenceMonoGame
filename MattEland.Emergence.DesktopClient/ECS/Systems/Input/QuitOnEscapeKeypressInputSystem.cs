@@ -1,13 +1,9 @@
-
-
 using System;
 using DefaultEcs.System;
-using MattEland.Emergence.World;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 
-namespace MattEland.Emergence.DesktopClient.ECS.Systems;
+namespace MattEland.Emergence.DesktopClient.ECS.Systems.Input;
 
 public class QuitOnEscapeKeypressInputSystem : ISystem<float>
 {

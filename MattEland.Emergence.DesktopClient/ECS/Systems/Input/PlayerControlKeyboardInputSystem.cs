@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.ECS.Systems;
 using MonoGame.Extended.Input;
 
-namespace MattEland.Emergence.DesktopClient.ECS.Systems;
+namespace MattEland.Emergence.DesktopClient.ECS.Systems.Input;
 
 public class PlayerControlKeyboardInputSystem(Player player, GameManager gameManager, IWorldService worldService)
     : IUpdateSystem

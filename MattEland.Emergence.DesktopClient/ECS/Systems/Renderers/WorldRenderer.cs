@@ -1,29 +1,33 @@
 using System;
+using DefaultEcs.System;
 using MattEland.Emergence.DesktopClient.Brushes;
 using MattEland.Emergence.DesktopClient.Helpers;
 using MattEland.Emergence.World.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.ECS.Systems;
 
-namespace MattEland.Emergence.DesktopClient.ECS.Systems;
+namespace MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 
-public class WorldRenderer(GameManager gameManager, GraphicsManager graphicsManager) : IDrawSystem
+public class WorldRenderer : ISystem<float>
 {
-    private readonly SpriteBatch _spriteBatch = new(graphicsManager.GraphicsDevice);
+    private readonly SpriteBatch _spriteBatch;
+    private readonly GraphicsManager _graphicsManager;
+    private readonly GameManager _gameManager;
 
-    public void Initialize(MonoGame.Extended.ECS.World world)
+    public WorldRenderer(DefaultEcs.World world)
     {
+        _graphicsManager = world.Get<GraphicsManager>();
+        _gameManager = world.Get<GameManager>();
+        _spriteBatch = new SpriteBatch(_graphicsManager.GraphicsDevice);
     }
 
-    public void Draw(GameTime gameTime)
+    public void Update(float totalSeconds)
     {
-        int tileSize = graphicsManager.Options.TileSize;
-        ViewportData visibleWindow =
-            gameManager.VisibleWindow ?? throw new InvalidOperationException("Visible window not set");
+        int tileSize = _graphicsManager.Options.TileSize;
+        ViewportData visibleWindow = _gameManager.VisibleWindow ?? throw new InvalidOperationException("Visible window not set");
         Point offset = visibleWindow.UpperLeft.ToOffset(tileSize);
 
-        RectangleBrush rectangles = graphicsManager.Rectangles;
+        RectangleBrush rectangles = _graphicsManager.Rectangles;
         _spriteBatch.Begin();
 
         // Render floors
@@ -40,6 +44,8 @@ public class WorldRenderer(GameManager gameManager, GraphicsManager graphicsMana
 
         _spriteBatch.End();
     }
+
+    public bool IsEnabled { get; set; } = true;
 
     public void Dispose()
     {

@@ -4,9 +4,8 @@ using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.BitmapFonts;
-using MonoGame.Extended.ECS.Systems;
 
-namespace MattEland.Emergence.DesktopClient.ECS.Systems;
+namespace MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 
 /// <summary>
 /// The <c>VersionDisplaySystem</c> is responsible for displaying the application's version information
