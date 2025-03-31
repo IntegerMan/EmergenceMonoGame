@@ -1,6 +1,7 @@
 using System;
 using DefaultEcs.System;
 using MattEland.Emergence.DesktopClient.ECS.Components;
+using MattEland.Emergence.DesktopClient.ECS.Messages;
 using MattEland.Emergence.World;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
@@ -15,7 +16,6 @@ namespace MattEland.Emergence.DesktopClient.ECS.Systems.Input;
 public class PlayerControlKeyboardInputSystem(DefaultEcs.World world) : AEntitySetSystem<float>(world)
 {
     private readonly IWorldService _worldService = world.Get<IWorldService>();
-    private readonly GameManager _gameManager = world.Get<GameManager>();
 
     protected override void Update(float totalSeconds, in Entity entity)
     {
@@ -43,7 +43,7 @@ public class PlayerControlKeyboardInputSystem(DefaultEcs.World world) : AEntityS
 
         if (affectedState)
         {
-            _gameManager.StateHasChanged();
+            world.Publish(new GameStateChangedMessage());
         }
     }
 }

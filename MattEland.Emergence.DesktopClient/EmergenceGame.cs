@@ -3,11 +3,13 @@ using DefaultEcs.System;
 using DefaultEcs.Threading;
 using MattEland.Emergence.DesktopClient.Brushes;
 using MattEland.Emergence.DesktopClient.Configuration;
+using MattEland.Emergence.DesktopClient.ECS.Messages;
 using MattEland.Emergence.DesktopClient.ECS.Systems;
 using MattEland.Emergence.DesktopClient.ECS.Systems.Input;
 using MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 using Microsoft.Extensions.Options;
 using MonoGame.Extended.BitmapFonts;
+using MonoGame.Extended.Collections;
 using MonoGame.Extended.Input;
 
 namespace MattEland.Emergence.DesktopClient;
@@ -27,6 +29,7 @@ public class EmergenceGame : Game
     
     private readonly GraphicsSettings _graphicsOptions;
     private readonly IWorldService _worldService;
+    private readonly Bag<IDisposable> _eventSubscriptions = new();
 
     public EmergenceGame(IWorldService worldService, IOptionsSnapshot<GraphicsSettings> graphics)
     {
@@ -81,7 +84,20 @@ public class EmergenceGame : Game
             new VersionNumberRenderer(_world, _spriteBatch),
             new FramesPerSecondRenderer(_world, _spriteBatch)
         );
+        
+        // Subscribe to top-level messages we care about
+        _eventSubscriptions.AddRange([
+            _world.Subscribe<ExitRequestedMessage>(OnExitRequested),
+            _world.Subscribe<GameStateChangedMessage>(OnGameStateChanged)
+        ]);
     }
+
+    private void OnGameStateChanged(in GameStateChangedMessage message)
+    {
+        _gameManager.StateHasChanged();
+    }
+
+    private void OnExitRequested(in ExitRequestedMessage message) => Exit();
 
     protected override void Initialize()
     {
@@ -150,6 +166,10 @@ public class EmergenceGame : Game
             _spriteBatch?.Dispose();
             _rectangleBrush?.Dispose();
             _world?.Dispose();
+            foreach (IDisposable subscription in _eventSubscriptions)
+            {
+                subscription.Dispose();
+            }
         }
 
         base.Dispose(disposing);
