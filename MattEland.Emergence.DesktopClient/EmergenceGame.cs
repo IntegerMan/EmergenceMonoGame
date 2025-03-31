@@ -55,6 +55,7 @@ public class EmergenceGame : Game
     {
         _updateSystem = new SequentialSystem<float>(
             new LevelManagementSystem(_world),
+            new PlayerControlKeyboardInputSystem(_world),
             new QuitOnEscapeKeypressInputSystem(_world)
         );
         _renderSystem = new SequentialSystem<float>(

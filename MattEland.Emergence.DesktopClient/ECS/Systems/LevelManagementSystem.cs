@@ -3,7 +3,6 @@ using DefaultEcs.System;
 using MattEland.Emergence.DesktopClient.ECS.Components;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
-using Microsoft.Xna.Framework;
 using Entity = DefaultEcs.Entity;
 
 namespace MattEland.Emergence.DesktopClient.ECS.Systems;
@@ -25,8 +24,7 @@ public class LevelManagementSystem : ISystem<float>
         Player player = worldService.Player;
         
         Entity playerEntity = _world.CreateEntity();
-        playerEntity.Set(new WorldPositionComponent(player.Pos));
-        playerEntity.Set(new RectangleRendererComponent(Color.Cyan));
+        playerEntity.Set(new GameObjectComponent(player));
         playerEntity.Set<PlayerMovementComponent>();
     }
 

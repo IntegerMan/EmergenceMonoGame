@@ -10,8 +10,7 @@ using Point = Microsoft.Xna.Framework.Point;
 
 namespace MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 
-[With(typeof(RectangleRendererComponent))]
-[With(typeof(WorldPositionComponent))]
+[With(typeof(GameObjectComponent))]
 public class GameObjectRenderer : AEntitySetSystem<float>
 {
     private readonly GraphicsManager _graphicsManager;
@@ -35,10 +34,9 @@ public class GameObjectRenderer : AEntitySetSystem<float>
         _spriteBatch.Begin();
         foreach (var entity in entities)
         {
-            RectangleRendererComponent rectangle = entity.Get<RectangleRendererComponent>();
-            WorldPositionComponent pos = entity.Get<WorldPositionComponent>();
-
-            rectangles.Render(pos.Pos.ToRectangle(tileSize, offset), rectangle.Color, _spriteBatch);
+            GameObjectComponent obj = entity.Get<GameObjectComponent>();
+            GameObject gameObject = obj.GameObject;
+            rectangles.Render(gameObject.Pos.ToRectangle(tileSize, offset), obj.RenderColor, _spriteBatch);
         }
         _spriteBatch.End();
     }
