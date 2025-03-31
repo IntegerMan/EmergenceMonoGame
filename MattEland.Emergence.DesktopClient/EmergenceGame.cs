@@ -1,5 +1,5 @@
-﻿using System;
-using MattEland.Emergence.DesktopClient.Configuration;
+﻿using MattEland.Emergence.DesktopClient.Configuration;
+using MattEland.Emergence.DesktopClient.ECS.Systems;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
@@ -11,9 +11,9 @@ public class EmergenceGame : Game
 {
     private readonly ILevelGenerator _levelGenerator;
     private readonly IWorldService _worldService;
-    private Level _level;
-    private Player _player;
-    private GameManager _gameManager;
+    private Level? _level;
+    private Player? _player;
+    private GameManager? _gameManager;
     private readonly GraphicsManager _graphicsManager;
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator, IOptionsSnapshot<GraphicsSettings> graphics)
@@ -39,13 +39,21 @@ public class EmergenceGame : Game
         _level = _levelGenerator.Generate(_player);
         _gameManager = new GameManager(_worldService, _player, _level);
 
+        // Configure our Entity Component System (ECS)
+        Components.Add(ConfigureEntityComponentSystem());
+
         base.Initialize();
     }
 
+    private MonoGame.Extended.ECS.World ConfigureEntityComponentSystem() 
+        => new WorldBuilder()
+            .AddSystem(new FramesPerSecondRenderer(_graphicsManager))
+            .AddSystem(new VersionNumberRenderer(_graphicsManager))
+            .Build();
 
     protected override void LoadContent()
     {
-        _gameManager.Viewport = _graphicsManager.CalculateViewport();
+        _gameManager!.Viewport = _graphicsManager.CalculateViewport();
         
         // Load renderers and other content
         _graphicsManager.LoadContent();
@@ -53,7 +61,7 @@ public class EmergenceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        bool exitRequested = _gameManager.Update(gameTime);
+        bool exitRequested = _gameManager!.Update(gameTime);
         if (exitRequested)
         {
             Exit();
@@ -64,7 +72,7 @@ public class EmergenceGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        _graphicsManager.Draw(gameTime, _gameManager.VisibleWindow);
+        _graphicsManager.Draw(gameTime, _gameManager!.VisibleWindow);
         
         base.Draw(gameTime);
     }

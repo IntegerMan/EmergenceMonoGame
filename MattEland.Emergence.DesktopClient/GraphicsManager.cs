@@ -12,15 +12,16 @@ namespace MattEland.Emergence.DesktopClient;
 public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
 {
     private readonly GraphicsDeviceManager _graphics = new(game);
-    private RectangleRenderer _rectangleBrush;
-    private WorldRenderer _worldRenderer;
-    private SpriteBatch _spriteBatch;
-    private BitmapFont _font;
+    private RectangleRenderer? _rectangleBrush;
+    private WorldRenderer? _worldRenderer;
+    private SpriteBatch? _spriteBatch;
+    private BitmapFont? _font;
 
-    private GameWindow Window => game.Window;
-    private GraphicsDevice GraphicsDevice => game.GraphicsDevice;
-    private ContentManager Content => game.Content;
-    
+    public GameWindow Window => game.Window;
+    public GraphicsDevice GraphicsDevice => game.GraphicsDevice;
+    public ContentManager Content => game.Content;
+    public BitmapFont DebugFont => _font ?? throw new InvalidOperationException("Font used before loaded");
+
     public void Maximize()
     {
         // Tell the OS we don't want to change the resolution. This makes the resize performant on Linux
@@ -71,10 +72,10 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     public void Draw(GameTime gameTime, ViewportData visibleWindow)
     {
         GraphicsDevice.Clear(Color.Black);
-        _spriteBatch.Begin();
+        _spriteBatch!.Begin();
         
-        _worldRenderer.Render(_spriteBatch, _rectangleBrush, visibleWindow);
-        _spriteBatch.DrawString(_font, $"FPS: {1f / gameTime.ElapsedGameTime.TotalSeconds:0.0}", new Vector2(10, 10), Color.White);
+        _worldRenderer!.Render(_spriteBatch, _rectangleBrush!, visibleWindow);
+        //_spriteBatch.DrawString(_font, $"FPS: {1f / gameTime.ElapsedGameTime.TotalSeconds:0.0}", new Vector2(10, 10), Color.White);
         
         _spriteBatch.End();
     }

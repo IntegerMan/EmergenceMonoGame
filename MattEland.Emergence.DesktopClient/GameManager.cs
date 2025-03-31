@@ -28,7 +28,7 @@ public class GameManager(IWorldService worldService, Player player, Level level)
             return ExitRequested;
         }
         
-        if (StateHasChanged)
+        if (StateHasChanged && Viewport is not null)
         {
             VisibleWindow = worldService.GetVisibleObjects(player, level, Viewport);
             StateHasChanged = false;
@@ -37,8 +37,8 @@ public class GameManager(IWorldService worldService, Player player, Level level)
         return KeepRunning;
     }
 
-    public ViewportData VisibleWindow { get; set; }
+    public ViewportData? VisibleWindow { get; set; }
 
     public bool StateHasChanged { get; private set; } = true; // Want to update the first time
-    public ViewportDimensions Viewport { get; set; }
+    public ViewportDimensions? Viewport { get; set; }
 }

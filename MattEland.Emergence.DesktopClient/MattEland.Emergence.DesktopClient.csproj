@@ -5,6 +5,18 @@
         <RollForward>Major</RollForward>
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
+        <Nullable>enable</Nullable>
+        <Version>0.0.1</Version>
+        <Title>Emergence</Title>
+        <Authors>Matt Eland</Authors>
+        <Copyright>Matt Eland</Copyright>
+        <PackageProjectUrl>https://github.com/IntegerMan/EmergenceMonoGame</PackageProjectUrl>
+        <PackageLicenseUrl>https://creativecommons.org/licenses/by-nc-nd/4.0/?ref=chooser-v1</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/IntegerMan/EmergenceMonoGame</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <IsPackable>false</IsPackable>
+        <FileVersion>0.1.*</FileVersion>
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -43,6 +55,10 @@
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\MattEland.Emergence.World\MattEland.Emergence.World.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="ECS\Components\" />
+      <Folder Include="ECS\Entities\" />
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
         <Message Text="Restoring dotnet tools" Importance="High"/>
