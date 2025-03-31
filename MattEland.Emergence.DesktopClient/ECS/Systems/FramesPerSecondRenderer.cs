@@ -44,7 +44,7 @@ public class FramesPerSecondRenderer(GraphicsManager graphics) : IDrawSystem
         string fpsText = $"Average FPS: {averageFps:F2}";
         
         // Draw the FPS text using the graphics manager
-        _spriteBatch!.Begin();
+        _spriteBatch.Begin();
         _spriteBatch.DrawString(graphics.DebugFont, fpsText, new Vector2(10, 10), Color.White);
         _spriteBatch.End();
     }

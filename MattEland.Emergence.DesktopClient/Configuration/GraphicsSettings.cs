@@ -7,7 +7,6 @@ namespace MattEland.Emergence.DesktopClient.Configuration;
 public class GraphicsSettings
 {
     public bool StartFullscreen { get; init; }
-    public int TileSize { get; init; }
-    public bool DebugViewport { get; init; }
-    public int TargetFPS { get; init; }
+    public int TileSize { get; init; } = 32;
+    public int TargetFramesPerSecond { get; init; } = 30;
 }

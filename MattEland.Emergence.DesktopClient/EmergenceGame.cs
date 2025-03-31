@@ -47,6 +47,7 @@ public class EmergenceGame : Game
 
     private MonoGame.Extended.ECS.World ConfigureEntityComponentSystem() 
         => new WorldBuilder()
+            .AddSystem(new WorldRenderer(_gameManager, _graphicsManager))
             .AddSystem(new FramesPerSecondRenderer(_graphicsManager))
             .AddSystem(new VersionNumberRenderer(_graphicsManager))
             .Build();
@@ -72,8 +73,7 @@ public class EmergenceGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        _graphicsManager.Draw(gameTime, _gameManager!.VisibleWindow);
-        
+        GraphicsDevice.Clear(Color.Black);
         base.Draw(gameTime);
     }
 
@@ -81,7 +81,7 @@ public class EmergenceGame : Game
     {
         if (disposing)
         {
-            _graphicsManager?.Dispose();
+            _graphicsManager.Dispose();
         }
 
         base.Dispose(disposing);

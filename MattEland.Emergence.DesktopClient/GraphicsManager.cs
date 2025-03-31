@@ -1,6 +1,6 @@
 using System;
+using MattEland.Emergence.DesktopClient.Brushes;
 using MattEland.Emergence.DesktopClient.Configuration;
-using MattEland.Emergence.DesktopClient.Renderers;
 using MattEland.Emergence.World.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -12,16 +12,16 @@ namespace MattEland.Emergence.DesktopClient;
 public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
 {
     private readonly GraphicsDeviceManager _graphics = new(game);
-    private RectangleRenderer? _rectangleBrush;
-    private WorldRenderer? _worldRenderer;
+    private RectangleBrush? _rectangleBrush;
     private SpriteBatch? _spriteBatch;
     private BitmapFont? _font;
-
+    
     public GameWindow Window => game.Window;
     public GraphicsDevice GraphicsDevice => game.GraphicsDevice;
     public ContentManager Content => game.Content;
     public BitmapFont DebugFont => _font ?? throw new InvalidOperationException("Font used before loaded");
-
+    public RectangleBrush Rectangles => _rectangleBrush ?? throw new InvalidOperationException("Rectangle renderer used before loaded");
+    public GraphicsSettings Options => options;
     public void Maximize()
     {
         // Tell the OS we don't want to change the resolution. This makes the resize performant on Linux
@@ -50,7 +50,7 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     
     public void Dispose()
     {
-        _graphics?.Dispose();
+        _graphics.Dispose();
         _rectangleBrush?.Dispose();
         _spriteBatch?.Dispose();
         
@@ -60,23 +60,10 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     public void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _rectangleBrush = new RectangleRenderer(GraphicsDevice);
-        _worldRenderer = new WorldRenderer(options);
+        _rectangleBrush = new RectangleBrush(GraphicsDevice);
         _font = Content.Load<BitmapFont>("fonts/Tahoma");
         
-                
         // Target 60 FPS
-        game.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / options.TargetFPS);
-    }
-
-    public void Draw(GameTime gameTime, ViewportData visibleWindow)
-    {
-        GraphicsDevice.Clear(Color.Black);
-        _spriteBatch!.Begin();
-        
-        _worldRenderer!.Render(_spriteBatch, _rectangleBrush!, visibleWindow);
-        //_spriteBatch.DrawString(_font, $"FPS: {1f / gameTime.ElapsedGameTime.TotalSeconds:0.0}", new Vector2(10, 10), Color.White);
-        
-        _spriteBatch.End();
+        game.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / options.TargetFramesPerSecond);
     }
 }
