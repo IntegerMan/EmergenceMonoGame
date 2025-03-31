@@ -12,10 +12,7 @@ namespace MattEland.Emergence.DesktopClient.ECS.Systems;
 public class PlayerControlKeyboardInputSystem(Player player, GameManager gameManager, IWorldService worldService)
     : IUpdateSystem
 {
-    public bool Move(Direction direction)
-    {
-        return worldService.MoveEntity(player, direction);
-    }
+    private bool Move(Direction direction) => worldService.MoveEntity(player, direction);
 
     public void Initialize(MonoGame.Extended.ECS.World world)
     {

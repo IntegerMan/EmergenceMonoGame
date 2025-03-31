@@ -53,7 +53,7 @@ public class EmergenceGame : Game
 
     protected override void LoadContent()
     {
-        _gameManager!.Viewport = _graphicsManager.CalculateViewport();
+        _gameManager.Viewport = _graphicsManager.CalculateViewport();
         
         // Load renderers and other content
         _graphicsManager.LoadContent();

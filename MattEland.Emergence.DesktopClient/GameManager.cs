@@ -26,7 +26,7 @@ public class GameManager(IWorldService worldService, Player player, Level level)
         }
     }
 
-    public ViewportData? VisibleWindow { get; set; }
+    public ViewportData? VisibleWindow { get; private set; }
 
     public void StateHasChanged()
     {

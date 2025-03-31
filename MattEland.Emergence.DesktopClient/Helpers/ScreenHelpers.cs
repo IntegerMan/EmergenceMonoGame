@@ -11,7 +11,7 @@ public static class ScreenHelpers
     public static Rectangle ToRectangle(this WorldPos pos, int tileSize, Point offset) 
         => new((pos.X * tileSize) + offset.X, (pos.Y * tileSize) + offset.Y, tileSize, tileSize);
 
-    public static Point ToPoint(this WorldPos pos, int tileSize)
+    private static Point ToPoint(this WorldPos pos, int tileSize)
         => new(pos.X * tileSize, pos.Y * tileSize);
     
     public static Point ToOffset(this WorldPos pos, int tileSize)

@@ -18,7 +18,6 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     
     public GameWindow Window => game.Window;
     public GraphicsDevice GraphicsDevice => game.GraphicsDevice;
-    public ContentManager Content => game.Content;
     public BitmapFont DebugFont => _font ?? throw new InvalidOperationException("Font used before loaded");
     public RectangleBrush Rectangles => _rectangleBrush ?? throw new InvalidOperationException("Rectangle renderer used before loaded");
     public GraphicsSettings Options => options;
@@ -61,7 +60,7 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _rectangleBrush = new RectangleBrush(GraphicsDevice);
-        _font = Content.Load<BitmapFont>("fonts/Tahoma");
+        _font = game.Content.Load<BitmapFont>("fonts/Tahoma");
         
         // Target 60 FPS
         game.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / options.TargetFramesPerSecond);

@@ -8,12 +8,9 @@ using MonoGame.Extended.ECS.Systems;
 
 namespace MattEland.Emergence.DesktopClient.ECS.Systems;
 
-public class WorldRenderer(
-    GameManager gameManager,
-    GraphicsManager graphicsManager) : IDrawSystem
+public class WorldRenderer(GameManager gameManager, GraphicsManager graphicsManager) : IDrawSystem
 {
     private readonly SpriteBatch _spriteBatch = new(graphicsManager.GraphicsDevice);
-    private readonly Point _origin = new(0, 0);
 
     public void Initialize(MonoGame.Extended.ECS.World world)
     {
@@ -25,10 +22,10 @@ public class WorldRenderer(
         ViewportData visibleWindow =
             gameManager.VisibleWindow ?? throw new InvalidOperationException("Visible window not set");
         Point offset = visibleWindow.UpperLeft.ToOffset(tileSize);
-        
+
         RectangleBrush rectangles = graphicsManager.Rectangles;
         _spriteBatch.Begin();
-        
+
         // Render floors
         foreach (TileInfo tile in visibleWindow.VisibleTiles)
         {
