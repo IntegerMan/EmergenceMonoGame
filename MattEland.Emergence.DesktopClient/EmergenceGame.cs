@@ -82,7 +82,6 @@ public class EmergenceGame : Core
         _world.Set(_graphicsSettings);
         _world.Set(_worldService.Player);
         _world.Set(_worldService.Level);
-        _world.Set(_worldService.Level);
         _world.Set(_rectangles);
         _world.Set(Content);
 

@@ -11,4 +11,9 @@ public class GameScene : Scene
         
         //Screen.SetSize(width, height);
     }
+
+    public override void Update()
+    {
+        base.Update();
+    }
 }
