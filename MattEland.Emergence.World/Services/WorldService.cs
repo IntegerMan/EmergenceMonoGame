@@ -14,8 +14,6 @@ public class WorldService : IWorldService
     
     public ViewportData GetVisibleObjects(Player perspective, Level level, ViewportDimensions viewport)
     {
-        ArgumentNullException.ThrowIfNull(viewport);
-        
         // Figure out upper left and lower right corners of the viewport
         int halfViewportWidth = viewport.Width / 2;
         int halfViewportHeight = viewport.Height / 2;
