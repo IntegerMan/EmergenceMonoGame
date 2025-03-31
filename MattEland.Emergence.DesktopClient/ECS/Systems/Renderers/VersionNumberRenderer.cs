@@ -1,8 +1,6 @@
 using System;
 using System.Reflection;
 using DefaultEcs.System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.BitmapFonts;
 
 namespace MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
@@ -18,17 +16,13 @@ public class VersionNumberRenderer : ISystem<float>
     private readonly string _text;
     private float _textWidth;
     private Vector2 _position = new(0, 0);
-    private readonly GraphicsManager _graphics;
-
-    /// <summary>
-    /// The <c>VersionDisplaySystem</c> is responsible for displaying the application's version information
-    /// at a designated position on the screen during the game's rendering phase. It integrates with the
-    /// Entity Component System (ECS) architecture as a drawing system.
-    /// </summary>
-    /// <param name="graphics">The <c>GraphicsManager</c> instance used to access the game's graphics resources.</param>
+    private readonly BitmapFont _font;
+    private readonly GameWindow _window;
+    
     public VersionNumberRenderer(DefaultEcs.World world, SpriteBatch spriteBatch)
     {
-        _graphics = world.Get<GraphicsManager>();
+        _font = world.Get<BitmapFont>();
+        _window = world.Get<GameWindow>();
         _spriteBatch = spriteBatch;
         
         Version version = Assembly.GetEntryAssembly()!.GetName().Version!;
@@ -44,17 +38,17 @@ public class VersionNumberRenderer : ISystem<float>
     public void Update(float state)
     {
         // Screen size is the same as the window size
-        Rectangle screenSize = _graphics.Window.ClientBounds;
+        Rectangle screenSize = _window.ClientBounds;
         Vector2 upperRight = new(screenSize.Width - 10, 10); // Adjust position as needed
         
         // Draw the version string in the top right corner
         if (_textWidth == 0)
         {
-            _textWidth = _graphics.DebugFont.MeasureString(_text).Width;
+            _textWidth = _font.MeasureString(_text).Width;
             _position = upperRight - new Vector2(_textWidth, 0); // This will need adjustment on resize
         }
         
-        _spriteBatch.DrawString(_graphics.DebugFont, _text, _position, Color.White);
+        _spriteBatch.DrawString(_font, _text, _position, Color.White);
     }
 
     public bool IsEnabled { get; set; } = true;

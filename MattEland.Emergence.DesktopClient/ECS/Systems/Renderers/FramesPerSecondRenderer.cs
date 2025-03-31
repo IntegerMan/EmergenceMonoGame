@@ -14,7 +14,7 @@ public class FramesPerSecondRenderer(DefaultEcs.World world, SpriteBatch spriteB
 {
     private const int MaxSamples = 100;
     private readonly Queue<float> _fpsSamples = new(MaxSamples);
-    private readonly GraphicsManager _graphics = world.Get<GraphicsManager>();
+    private readonly BitmapFont _font = world.Get<BitmapFont>();
 
     public void Update(float totalSeconds)
     {
@@ -39,7 +39,7 @@ public class FramesPerSecondRenderer(DefaultEcs.World world, SpriteBatch spriteB
         string fpsText = $"Average FPS: {averageFps:F2}";
         
         // Draw the FPS text using the graphics manager
-        spriteBatch.DrawString(_graphics.DebugFont, fpsText, new Vector2(10, 10), Color.White);
+        spriteBatch.DrawString(_font, fpsText, new Vector2(10, 10), Color.White);
     }
 
     public bool IsEnabled { get; set; } = true;
