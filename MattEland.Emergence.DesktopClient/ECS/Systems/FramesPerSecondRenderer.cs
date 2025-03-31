@@ -1,30 +1,32 @@
 using System;
 using System.Collections.Generic;
+using DefaultEcs.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.BitmapFonts;
-using MonoGame.Extended.ECS.Systems;
 
 namespace MattEland.Emergence.DesktopClient.ECS.Systems;
 
 /// <summary>
 /// A system responsible for rendering the current frames per second (FPS) on the screen.
 /// </summary>
-/// <param name="graphics">The <c>GraphicsManager</c> instance used to access the game's graphics resources.</param>'
-public class FramesPerSecondRenderer(GraphicsManager graphics) : IDrawSystem
+public class FramesPerSecondRenderer : ISystem<float>
 {
     private const int MaxSamples = 100;
-    private readonly SpriteBatch _spriteBatch = new(graphics.GraphicsDevice);
+    private readonly SpriteBatch _spriteBatch;
     private readonly Queue<float> _fpsSamples = new(MaxSamples);
-    
-    public void Initialize(MonoGame.Extended.ECS.World world)
+    private readonly GraphicsManager _graphics;
+
+    public FramesPerSecondRenderer(DefaultEcs.World world)
     {
+        _graphics = world.Get<GraphicsManager>();
+        _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
     }
 
-    public void Draw(GameTime gameTime)
+    public void Update(float totalSeconds)
     {
         // Draw the FPS in the top left corner
-        float fps = 1f / (float)gameTime.ElapsedGameTime.TotalSeconds;
+        float fps = 1f / totalSeconds;
         
         // Add the current FPS to the samples queue
         while (_fpsSamples.Count >= MaxSamples)
@@ -45,9 +47,11 @@ public class FramesPerSecondRenderer(GraphicsManager graphics) : IDrawSystem
         
         // Draw the FPS text using the graphics manager
         _spriteBatch.Begin();
-        _spriteBatch.DrawString(graphics.DebugFont, fpsText, new Vector2(10, 10), Color.White);
+        _spriteBatch.DrawString(_graphics.DebugFont, fpsText, new Vector2(10, 10), Color.White);
         _spriteBatch.End();
     }
+
+    public bool IsEnabled { get; set; } = true;
 
     public void Dispose()
     {

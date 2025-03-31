@@ -26,6 +26,8 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
         // Tell the OS we don't want to change the resolution. This makes the resize performant on Linux
         _graphics.HardwareModeSwitch = false;
         Window.IsBorderless = true;
+        
+        _graphics.SynchronizeWithVerticalRetrace = true;
 
         // Change the resolution to the current display mode, making the app fullscreen
         DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
