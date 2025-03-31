@@ -37,11 +37,11 @@ public class EmergenceGame : Game
             _graphicsManager.Maximize();
         }
 
-        Player player = worldService.CreatePlayer();
-        Level level = levelGenerator.Generate(player);
-        _gameManager = new GameManager(worldService, player, level);
+        (Level level, Player player) = worldService.StartWorld();
+        _gameManager = new GameManager(worldService);
         
-        _world = new();
+        // Set up the Entity Component System World
+        _world = new DefaultEcs.World();
         _world.Set(worldService);
         _world.Set(graphicsOptions);
         _world.Set(_gameManager);
@@ -103,6 +103,9 @@ public class EmergenceGame : Game
         if (disposing)
         {
             _graphicsManager.Dispose();
+            _renderSystem?.Dispose();
+            _updateSystem?.Dispose();
+            _world.Dispose();
         }
 
         base.Dispose(disposing);
