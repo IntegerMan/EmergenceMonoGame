@@ -60,6 +60,7 @@
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\MattEland.Emergence.World\MattEland.Emergence.World.csproj" />
+      <ProjectReference Include="..\Nez\Nez.Portable\Nez.csproj" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="ECS\Entities\" />

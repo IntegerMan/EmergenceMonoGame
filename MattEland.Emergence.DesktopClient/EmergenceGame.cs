@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
 using MattEland.Emergence.DesktopClient.Configuration;
@@ -14,7 +14,7 @@ using MonoGame.Extended.Input;
 
 namespace MattEland.Emergence.DesktopClient;
 
-public class EmergenceGame : Game
+public class EmergenceGame : Nez.Core
 {
     private readonly GameManager _gameManager;
     private readonly GraphicsManager _graphicsManager;
@@ -37,7 +37,7 @@ public class EmergenceGame : Game
         _graphicsManager = new GraphicsManager(this, graphicsOptions);
         if (graphicsOptions.StartFullscreen)
         {
-            _graphicsManager.Maximize();
+            //_graphicsManager.Maximize();
         }
 
         (Level level, Player player) = worldService.StartWorld();

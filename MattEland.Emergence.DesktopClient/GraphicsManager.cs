@@ -11,7 +11,6 @@ namespace MattEland.Emergence.DesktopClient;
 
 public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
 {
-    private readonly GraphicsDeviceManager _graphics = new(game);
     private RectangleBrush? _rectangleBrush;
     private BitmapFont? _font;
     
@@ -20,7 +19,7 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     public BitmapFont DebugFont => _font ?? throw new InvalidOperationException("Font used before loaded");
     public RectangleBrush Rectangles => _rectangleBrush ?? throw new InvalidOperationException("Rectangle renderer used before loaded");
     public GraphicsSettings Options => options;
-
+    /*
     public void Maximize()
     {
         // Tell the OS we don't want to change the resolution. This makes the resize performant on Linux
@@ -36,6 +35,7 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
         _graphics.IsFullScreen = true;
         _graphics.ApplyChanges();
     }
+    */
     
     public ViewportDimensions CalculateViewport()
     {
@@ -51,7 +51,6 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     
     public void Dispose()
     {
-        _graphics.Dispose();
         _rectangleBrush?.Dispose();
         
         GC.SuppressFinalize(this);
