@@ -3,29 +3,32 @@ using DefaultEcs.System;
 using DefaultEcs.Threading;
 using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.ECS.Systems;
-using MattEland.Emergence.DesktopClient.ECS.Systems.Input;
-using MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
+using MattEland.Emergence.DesktopClient.Scenes;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Input;
+using Nez;
+using Nez.Console;
 
 namespace MattEland.Emergence.DesktopClient;
 
 public class EmergenceGame : Nez.Core
 {
+    private readonly GraphicsSettings _graphicsSettings;
+    /*
+    private readonly IWorldService _worldService;
     private readonly GameManager _gameManager;
     private readonly GraphicsManager _graphicsManager;
-    private ISystem<float>? _renderSystem;
-    private ISystem<float>? _updateSystem;
-    private readonly DefaultEcs.World _world;
-    private SpriteBatch? _spriteBatch;
+    private readonly Player _player;
+    */
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
         IOptionsSnapshot<GraphicsSettings> graphics)
     {
+        _graphicsSettings = graphics.Value;
+        /*
+        _worldService = worldService;
         GraphicsSettings graphicsOptions = graphics.Value;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -43,6 +46,10 @@ public class EmergenceGame : Nez.Core
         (Level level, Player player) = worldService.StartWorld();
         _gameManager = new GameManager(worldService);
         
+        _player = worldService.CreatePlayer();
+        Level level = levelGenerator.Generate(_player);
+        _gameManager = new GameManager(worldService, _player, level);
+        */
         // Set up the Entity Component System World
         _world = new DefaultEcs.World();
         _world.Set(worldService);
@@ -58,25 +65,32 @@ public class EmergenceGame : Nez.Core
     {
         if (_spriteBatch is null) throw new InvalidOperationException("SpriteBatch not initialized");
         
-        // Update Systems are invoked during the Update phase and can potentially be run in parallel
-        _updateSystem = new ParallelSystem<float>(
-            new DefaultParallelRunner(degreeOfParallelism: 3),
-            new LevelManagementSystem(_world),
-            new PlayerControlKeyboardInputSystem(_world),
-            new QuitOnEscapeKeypressInputSystem(_world)
-        );
+        DebugConsole.RenderScale = _graphicsSettings.DebugRenderScale;
+        Scene.SetDefaultDesignResolution(_graphicsSettings.DesignWidth, _graphicsSettings.DesignHeight, Scene.SceneResolutionPolicy.NoBorderPixelPerfect);
+        Screen.SetSize(_graphicsSettings.DesignWidth, _graphicsSettings.DesignHeight);
         
-        // Render Systems are invoked from bottom of the Z-order to top during the Draw phase and share a sprite batch
-        _renderSystem = new SequentialSystem<float>(
-            new WorldRenderer(_world, _spriteBatch),
-            new GameObjectRenderer(_world, _spriteBatch),
-            new VersionNumberRenderer(_world, _spriteBatch),
-            new FramesPerSecondRenderer(_world, _spriteBatch)
-        );
+        Window.AllowUserResizing = true;
+        
+        Scene = new GameScene();
+        
+        
+        // Configure our Entity Component System (ECS)
+        //Components.Add(ConfigureEntityComponentSystem());
     }
+
+    /*
+    private MonoGame.Extended.ECS.World ConfigureEntityComponentSystem() 
+        => new WorldBuilder()
+            .AddSystem(new WorldRenderer(_gameManager, _graphicsManager))
+            .AddSystem(new FramesPerSecondRenderer(_graphicsManager))
+            .AddSystem(new VersionNumberRenderer(_graphicsManager))
+            .AddSystem(new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService))
+            .Build();
+            */
 
     protected override void LoadContent()
     {
+        /*
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         InitializeEntityComponentSystem();
@@ -85,11 +99,13 @@ public class EmergenceGame : Nez.Core
 
         // Load renderers and other content
         _graphicsManager.LoadContent();
+        */
         base.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
+        /*
         KeyboardExtended.Update();
         _updateSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -98,12 +114,14 @@ public class EmergenceGame : Nez.Core
         {
             Exit();
         }
+        */
 
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
+        //GraphicsDevice.Clear(Color.Black);
         GraphicsDevice.Clear(Color.Black);
         _spriteBatch!.Begin();
         _renderSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -114,6 +132,7 @@ public class EmergenceGame : Nez.Core
 
     protected override void Dispose(bool disposing)
     {
+        /*
         if (disposing)
         {
             _graphicsManager.Dispose();
@@ -122,6 +141,7 @@ public class EmergenceGame : Nez.Core
             _spriteBatch?.Dispose();
             _world.Dispose();
         }
+        */
 
         base.Dispose(disposing);
     }
