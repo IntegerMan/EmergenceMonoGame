@@ -1,6 +1,8 @@
+using MattEland.Emergence.Engine.Level;
+
 namespace MattEland.Emergence.World.Models;
 
-public class Actor(Pos2D pos, ActorType actorType) : GameObject(pos)
+public abstract class Actor(Pos2D pos, ActorType actorType) : GameObject(pos)
 {
-    
+    public bool IsPlayer => actorType == ActorType.Player;
 }
