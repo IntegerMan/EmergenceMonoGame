@@ -1,34 +1,40 @@
 using System;
 using DefaultEcs.System;
 using DefaultEcs.Threading;
+using MattEland.Emergence.DesktopClient.Brushes;
 using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.ECS.Systems;
+using MattEland.Emergence.DesktopClient.ECS.Systems.Input;
+using MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 using MattEland.Emergence.DesktopClient.Scenes;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Console;
 
 namespace MattEland.Emergence.DesktopClient;
 
-public class EmergenceGame : Nez.Core
+public class EmergenceGame : Core
 {
     private readonly GraphicsSettings _graphicsSettings;
-    /*
-    private readonly IWorldService _worldService;
-    private readonly GameManager _gameManager;
-    private readonly GraphicsManager _graphicsManager;
-    private readonly Player _player;
-    */
 
-    public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
-        IOptionsSnapshot<GraphicsSettings> graphics)
+    private DefaultEcs.World? _world;
+
+    private SpriteBatch? _spriteBatch;
+
+    private readonly IWorldService _worldService;
+    
+    private ISystem<float>? _renderSystem;
+    private ISystem<float>? _updateSystem;
+    private RectangleBrush? _rectangles;
+
+    public EmergenceGame(IWorldService worldService, IOptionsSnapshot<GraphicsSettings> graphics)
     {
         _graphicsSettings = graphics.Value;
         /*
-        _worldService = worldService;
         GraphicsSettings graphicsOptions = graphics.Value;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -42,87 +48,89 @@ public class EmergenceGame : Nez.Core
         {
             //_graphicsManager.Maximize();
         }
-
-        (Level level, Player player) = worldService.StartWorld();
-        _gameManager = new GameManager(worldService);
-        
-        _player = worldService.CreatePlayer();
-        Level level = levelGenerator.Generate(_player);
-        _gameManager = new GameManager(worldService, _player, level);
         */
-        // Set up the Entity Component System World
-        _world = new DefaultEcs.World();
-        _world.Set(worldService);
-        _world.Set(graphicsOptions);
-        _world.Set(_gameManager);
-        _world.Set(_graphicsManager);
-        _world.Set(player);
-        _world.Set(level);
-        _world.Set(Content);
+        worldService.StartWorld();
+        _worldService = worldService;
+    }
+    
+    protected override void Initialize()
+    {
+        base.Initialize();
+        
+        // Graphical Settings
+        DebugConsole.RenderScale = _graphicsSettings.DebugRenderScale;
+        Scene.SetDefaultDesignResolution(_graphicsSettings.DesignWidth, _graphicsSettings.DesignHeight, Scene.SceneResolutionPolicy.NoBorderPixelPerfect);
+        Screen.SetSize(_graphicsSettings.DesignWidth, _graphicsSettings.DesignHeight);
+        Window.AllowUserResizing = true;
+        
+        // Entity Component System and render batching
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _rectangles = new RectangleBrush(GraphicsDevice);
+        InitializeEntityComponentSystem();
+        
+        // Scene management
+        Scene = new GameScene();
     }
 
     private void InitializeEntityComponentSystem()
     {
         if (_spriteBatch is null) throw new InvalidOperationException("SpriteBatch not initialized");
+
+        // Set up the Entity Component System World
+        _world = new DefaultEcs.World();
+        _world.Set(_worldService);
+        _world.Set(_graphicsSettings);
+        _world.Set(_worldService.Player);
+        _world.Set(_worldService.Level);
+        _world.Set(_worldService.Level);
+        _world.Set(_rectangles);
+        _world.Set(Content);
+
+        GameManager gameManager = new(_world);
+        gameManager.Viewport = CalculateViewport();
+        _world.Set(gameManager);
         
-        DebugConsole.RenderScale = _graphicsSettings.DebugRenderScale;
-        Scene.SetDefaultDesignResolution(_graphicsSettings.DesignWidth, _graphicsSettings.DesignHeight, Scene.SceneResolutionPolicy.NoBorderPixelPerfect);
-        Screen.SetSize(_graphicsSettings.DesignWidth, _graphicsSettings.DesignHeight);
-        
-        Window.AllowUserResizing = true;
-        
-        Scene = new GameScene();
-        
-        
-        // Configure our Entity Component System (ECS)
-        //Components.Add(ConfigureEntityComponentSystem());
+        // Update Systems are invoked during the Update phase and can potentially be run in parallel
+        _updateSystem = new SequentialSystem<float>(
+            gameManager,
+            new LevelManagementSystem(_world),
+            new PlayerControlKeyboardInputSystem(_world),
+            new QuitOnEscapeKeypressInputSystem(_world)
+        );
+
+        // Render Systems are invoked from bottom of the Z-order to top during the Draw phase and share a sprite batch
+        _renderSystem = new SequentialSystem<float>(
+            new WorldRenderer(_world, _spriteBatch),
+            new GameObjectRenderer(_world, _spriteBatch)//,
+            //new VersionNumberRenderer(_world, _spriteBatch),
+            //new FramesPerSecondRenderer(_world, _spriteBatch)
+        );
     }
-
-    /*
-    private MonoGame.Extended.ECS.World ConfigureEntityComponentSystem() 
-        => new WorldBuilder()
-            .AddSystem(new WorldRenderer(_gameManager, _graphicsManager))
-            .AddSystem(new FramesPerSecondRenderer(_graphicsManager))
-            .AddSystem(new VersionNumberRenderer(_graphicsManager))
-            .AddSystem(new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService))
-            .Build();
-            */
-
-    protected override void LoadContent()
+    
+    public ViewportDimensions CalculateViewport()
     {
-        /*
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        int tileSize = _graphicsSettings.TileSize;
+        float width = Window.ClientBounds.Width;
+        float height = Window.ClientBounds.Height;
 
-        InitializeEntityComponentSystem();
-
-        _gameManager.Viewport = _graphicsManager.CalculateViewport();
-
-        // Load renderers and other content
-        _graphicsManager.LoadContent();
-        */
-        base.LoadContent();
+        return new ViewportDimensions(
+            (int)Math.Ceiling(width / tileSize),
+            (int)Math.Ceiling(height / tileSize),
+            tileSize);
     }
+
 
     protected override void Update(GameTime gameTime)
     {
-        /*
-        KeyboardExtended.Update();
         _updateSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-
-        _gameManager.Update(gameTime);
-        if (_gameManager.ExitRequested)
-        {
-            Exit();
-        }
-        */
 
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        //GraphicsDevice.Clear(Color.Black);
         GraphicsDevice.Clear(Color.Black);
+        
         _spriteBatch!.Begin();
         _renderSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
         _spriteBatch.End();
@@ -132,16 +140,15 @@ public class EmergenceGame : Nez.Core
 
     protected override void Dispose(bool disposing)
     {
-        /*
         if (disposing)
         {
-            _graphicsManager.Dispose();
+            //_graphicsManager.Dispose();
             _renderSystem?.Dispose();
             _updateSystem?.Dispose();
             _spriteBatch?.Dispose();
-            _world.Dispose();
+            _rectangles?.Dispose();
+            _world?.Dispose();
         }
-        */
 
         base.Dispose(disposing);
     }

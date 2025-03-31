@@ -37,18 +37,6 @@ public class GraphicsManager(Game game, GraphicsSettings options) : IDisposable
     }
     */
     
-    public ViewportDimensions CalculateViewport()
-    {
-        int tileSize = options.TileSize;
-        float width = Window.ClientBounds.Width;
-        float height = Window.ClientBounds.Height;
-
-        return new ViewportDimensions(
-            (int)Math.Ceiling(width / tileSize),
-            (int)Math.Ceiling(height / tileSize),
-            tileSize);
-    }
-    
     public void Dispose()
     {
         _rectangleBrush?.Dispose();
