@@ -58,11 +58,15 @@ public class EmergenceGame : Game
     {
         if (_spriteBatch is null) throw new InvalidOperationException("SpriteBatch not initialized");
         
-        _updateSystem = new SequentialSystem<float>(
+        // Update Systems are invoked during the Update phase and can potentially be run in parallel
+        _updateSystem = new ParallelSystem<float>(
+            new DefaultParallelRunner(degreeOfParallelism: 3),
             new LevelManagementSystem(_world),
             new PlayerControlKeyboardInputSystem(_world),
             new QuitOnEscapeKeypressInputSystem(_world)
         );
+        
+        // Render Systems are invoked from bottom of the Z-order to top during the Draw phase and share a sprite batch
         _renderSystem = new SequentialSystem<float>(
             new WorldRenderer(_world, _spriteBatch),
             new GameObjectRenderer(_world, _spriteBatch),
