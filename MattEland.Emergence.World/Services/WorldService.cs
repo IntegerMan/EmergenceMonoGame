@@ -2,8 +2,10 @@ using MattEland.Emergence.World.Models;
 
 namespace MattEland.Emergence.World.Services;
 
-public class WorldService : IWorldService
+public class WorldService(ILevelGenerator levelGenerator) : IWorldService
 {
+    private Player? _player;
+    
     public bool MoveEntity(GameObject entity, Direction direction)
     {
         // This should eventually need to worry about collisions, bump combat, level geometry, etc.
@@ -12,28 +14,41 @@ public class WorldService : IWorldService
         return true; // false if invalid
     }
     
-    public ViewportData GetVisibleObjects(Player perspective, Level level, ViewportDimensions viewport)
+    public ViewportData GetVisibleObjects(ViewportDimensions viewport)
     {
+        if (Level is null) throw new InvalidOperationException("No level loaded");
+        
+        // We need an origin we're viewing from. Set that to the player's position
+        WorldPos pos = Player.Pos;
+        
         // Figure out upper left and lower right corners of the viewport
         int halfViewportWidth = viewport.Width / 2;
         int halfViewportHeight = viewport.Height / 2;
-        WorldPos upperLeft = new(perspective.Pos.X - halfViewportWidth, perspective.Pos.Y - halfViewportHeight);
+        WorldPos upperLeft = new(pos.X - halfViewportWidth, pos.Y - halfViewportHeight);
         WorldPos lowerRight = upperLeft.Offset(viewport.Width - 1, viewport.Height - 1);
-
+        
         return new ViewportData
         {
             Viewport = viewport,
-            Center = perspective.Pos,
-            VisibleTiles = PopulateVisibleTiles(level, viewport, upperLeft, lowerRight),
-            VisibleObjects = level.Objects.Where(obj => IsInViewport(obj.Pos, upperLeft, lowerRight))
+            Center = pos,
+            VisibleTiles = PopulateVisibleTiles(Level, viewport, upperLeft, lowerRight),
+            VisibleObjects = Level.Objects.Where(obj => IsInViewport(obj.Pos, upperLeft, lowerRight))
         };
     }
 
+    public Player Player => _player ??= new Player(new WorldPos(0, 0));
+    
+    public Level? Level { get; private set; }
+  
+    public (Level level, Player player) StartWorld()
+    {
+        _player = new Player(new WorldPos(0, 0));
+        Level = levelGenerator.Generate(_player);
+        
+        return (Level, _player);
+    }
 
-    public Player CreatePlayer() => new(new WorldPos(0, 0));
-
-    private static List<TileInfo> PopulateVisibleTiles(Level level, ViewportDimensions viewport, WorldPos upperLeft,
-        WorldPos lowerRight)
+    private static List<TileInfo> PopulateVisibleTiles(Level level, ViewportDimensions viewport, WorldPos upperLeft, WorldPos lowerRight)
     {
         List<TileInfo> visibleTiles = new(viewport.Width * viewport.Height);
 

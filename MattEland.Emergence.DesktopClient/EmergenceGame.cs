@@ -1,26 +1,37 @@
-﻿using MattEland.Emergence.DesktopClient.Configuration;
+﻿using System;
+using DefaultEcs.System;
+using DefaultEcs.Threading;
+using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.ECS.Systems;
+using MattEland.Emergence.DesktopClient.ECS.Systems.Input;
+using MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Input;
 
 namespace MattEland.Emergence.DesktopClient;
 
 public class EmergenceGame : Game
 {
-    private readonly IWorldService _worldService;
     private readonly GameManager _gameManager;
     private readonly GraphicsManager _graphicsManager;
-    private readonly Player _player;
+    private ISystem<float>? _renderSystem;
+    private ISystem<float>? _updateSystem;
+    private readonly DefaultEcs.World _world;
+    private SpriteBatch? _spriteBatch;
 
-    public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator, IOptionsSnapshot<GraphicsSettings> graphics)
+    public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
+        IOptionsSnapshot<GraphicsSettings> graphics)
     {
-        _worldService = worldService;
         GraphicsSettings graphicsOptions = graphics.Value;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         Window.Title = "Emergence";
+        Window.AllowAltF4 = true;
+        Window.AllowUserResizing = true;
 
         // Set up graphics management
         _graphicsManager = new GraphicsManager(this, graphicsOptions);
@@ -28,39 +39,60 @@ public class EmergenceGame : Game
         {
             _graphicsManager.Maximize();
         }
+
+        (Level level, Player player) = worldService.StartWorld();
+        _gameManager = new GameManager(worldService);
         
-        _player = worldService.CreatePlayer();
-        Level level = levelGenerator.Generate(_player);
-        _gameManager = new GameManager(worldService, _player, level);
+        // Set up the Entity Component System World
+        _world = new DefaultEcs.World();
+        _world.Set(worldService);
+        _world.Set(graphicsOptions);
+        _world.Set(_gameManager);
+        _world.Set(_graphicsManager);
+        _world.Set(player);
+        _world.Set(level);
+        _world.Set(Content);
     }
 
-    protected override void Initialize()
+    private void InitializeEntityComponentSystem()
     {
-
-        // Configure our Entity Component System (ECS)
-        Components.Add(ConfigureEntityComponentSystem());
-
-        base.Initialize();
+        if (_spriteBatch is null) throw new InvalidOperationException("SpriteBatch not initialized");
+        
+        // Update Systems are invoked during the Update phase and can potentially be run in parallel
+        _updateSystem = new ParallelSystem<float>(
+            new DefaultParallelRunner(degreeOfParallelism: 3),
+            new LevelManagementSystem(_world),
+            new PlayerControlKeyboardInputSystem(_world),
+            new QuitOnEscapeKeypressInputSystem(_world)
+        );
+        
+        // Render Systems are invoked from bottom of the Z-order to top during the Draw phase and share a sprite batch
+        _renderSystem = new SequentialSystem<float>(
+            new WorldRenderer(_world, _spriteBatch),
+            new GameObjectRenderer(_world, _spriteBatch),
+            new VersionNumberRenderer(_world, _spriteBatch),
+            new FramesPerSecondRenderer(_world, _spriteBatch)
+        );
     }
-
-    private MonoGame.Extended.ECS.World ConfigureEntityComponentSystem() 
-        => new WorldBuilder()
-            .AddSystem(new WorldRenderer(_gameManager, _graphicsManager))
-            .AddSystem(new FramesPerSecondRenderer(_graphicsManager))
-            .AddSystem(new VersionNumberRenderer(_graphicsManager))
-            .AddSystem(new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService))
-            .Build();
 
     protected override void LoadContent()
     {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        InitializeEntityComponentSystem();
+
         _gameManager.Viewport = _graphicsManager.CalculateViewport();
-        
+
         // Load renderers and other content
         _graphicsManager.LoadContent();
+        base.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
+        KeyboardExtended.Update();
+        _updateSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
         _gameManager.Update(gameTime);
         if (_gameManager.ExitRequested)
         {
@@ -73,6 +105,10 @@ public class EmergenceGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
+        _spriteBatch!.Begin();
+        _renderSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+        _spriteBatch.End();
+        
         base.Draw(gameTime);
     }
 
@@ -81,6 +117,10 @@ public class EmergenceGame : Game
         if (disposing)
         {
             _graphicsManager.Dispose();
+            _renderSystem?.Dispose();
+            _updateSystem?.Dispose();
+            _spriteBatch?.Dispose();
+            _world.Dispose();
         }
 
         base.Dispose(disposing);

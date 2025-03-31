@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace MattEland.Emergence.DesktopClient;
 
-public class GameManager(IWorldService worldService, Player player, Level level)
+public class GameManager(IWorldService worldService)
 { 
     private bool _isVisibleRegionDirty = true;
 
@@ -12,16 +12,9 @@ public class GameManager(IWorldService worldService, Player player, Level level)
     
     public void Update(GameTime gameTime)
     {
-        /*
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-        {
-            return ExitRequested;
-        }
-        */
-        
         if (_isVisibleRegionDirty && Viewport is not null)
         {
-            VisibleWindow = worldService.GetVisibleObjects(player, level, Viewport);
+            VisibleWindow = worldService.GetVisibleObjects(Viewport);
             _isVisibleRegionDirty = false;
         }
     }
