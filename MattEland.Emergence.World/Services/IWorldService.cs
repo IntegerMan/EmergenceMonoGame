@@ -7,4 +7,5 @@ public interface IWorldService
     ViewportData GetVisibleObjects(Player perspective, Level level, ViewportDimensions viewport);
     Player CreatePlayer();
     bool MoveEntity(GameObject entity, Direction direction);
+    Player Player { get; }
 }

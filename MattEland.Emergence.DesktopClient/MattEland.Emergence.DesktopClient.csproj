@@ -62,7 +62,6 @@
       <ProjectReference Include="..\MattEland.Emergence.World\MattEland.Emergence.World.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="ECS\Components\" />
       <Folder Include="ECS\Entities\" />
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

@@ -4,6 +4,8 @@ namespace MattEland.Emergence.World.Services;
 
 public class WorldService : IWorldService
 {
+    private Player? _player;
+    
     public bool MoveEntity(GameObject entity, Direction direction)
     {
         // This should eventually need to worry about collisions, bump combat, level geometry, etc.
@@ -30,7 +32,13 @@ public class WorldService : IWorldService
     }
 
 
-    public Player CreatePlayer() => new(new WorldPos(0, 0));
+    public Player CreatePlayer()
+    {
+        _player = new Player(new WorldPos(0, 0));
+        return _player;
+    }
+
+    public Player Player => _player ??= CreatePlayer();
 
     private static List<TileInfo> PopulateVisibleTiles(Level level, ViewportDimensions viewport, WorldPos upperLeft,
         WorldPos lowerRight)

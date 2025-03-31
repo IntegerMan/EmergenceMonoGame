@@ -14,17 +14,15 @@ namespace MattEland.Emergence.DesktopClient;
 
 public class EmergenceGame : Game
 {
-    private readonly IWorldService _worldService;
     private readonly GameManager _gameManager;
     private readonly GraphicsManager _graphicsManager;
-    private readonly Player _player;
     private ISystem<float>? _renderSystem;
     private ISystem<float>? _updateSystem;
+    private readonly DefaultEcs.World _world;
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
         IOptionsSnapshot<GraphicsSettings> graphics)
     {
-        _worldService = worldService;
         GraphicsSettings graphicsOptions = graphics.Value;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -39,47 +37,35 @@ public class EmergenceGame : Game
             _graphicsManager.Maximize();
         }
 
-        _player = worldService.CreatePlayer();
-        Level level = levelGenerator.Generate(_player);
-        _gameManager = new GameManager(worldService, _player, level);
+        Player player = worldService.CreatePlayer();
+        Level level = levelGenerator.Generate(player);
+        _gameManager = new GameManager(worldService, player, level);
+        
+        _world = new();
+        _world.Set(worldService);
+        _world.Set(graphicsOptions);
+        _world.Set(_gameManager);
+        _world.Set(_graphicsManager);
+        _world.Set(player);
+        _world.Set(level);
+        _world.Set(Content);
     }
 
     protected override void Initialize()
     {
-        DefaultEcs.World world = new();
-        world.Set(Content);
-        world.Set(_graphicsManager);
-        world.Set(_gameManager);
-
         _updateSystem = new SequentialSystem<float>(
-            new QuitOnEscapeKeypressInputSystem(world)
-            //new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService),
+            new LevelManagementSystem(_world),
+            new QuitOnEscapeKeypressInputSystem(_world)
         );
         _renderSystem = new SequentialSystem<float>(
-            new WorldRenderer(world),
-            new VersionNumberRenderer(world),
-            new FramesPerSecondRenderer(world)
+            new WorldRenderer(_world),
+            new GameObjectRenderer(_world),
+            new VersionNumberRenderer(_world),
+            new FramesPerSecondRenderer(_world)
         );
 
         base.Initialize();
     }
-
-    /*
-    private IGameComponent ConfigureEntityComponentSystem()
-    {
-        DefaultEcs.World world = new DefaultEcs.World();
-
-        // Set up the ECS world with the necessary systems
-
-
-        return new WorldBuilder()
-            .AddSystem(new WorldRenderer(_gameManager, _graphicsManager))
-            .AddSystem(new FramesPerSecondRenderer(_graphicsManager))
-            .AddSystem(new VersionNumberRenderer(_graphicsManager))
-            .AddSystem(new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService))
-            .Build();
-    }
-    */
 
     protected override void LoadContent()
     {
