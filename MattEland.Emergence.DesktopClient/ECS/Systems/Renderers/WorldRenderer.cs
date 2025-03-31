@@ -8,18 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 
-public class WorldRenderer : ISystem<float>
+public class WorldRenderer(DefaultEcs.World world, SpriteBatch spriteBatch) : ISystem<float>
 {
-    private readonly SpriteBatch _spriteBatch;
-    private readonly GraphicsManager _graphicsManager;
-    private readonly GameManager _gameManager;
-
-    public WorldRenderer(DefaultEcs.World world)
-    {
-        _graphicsManager = world.Get<GraphicsManager>();
-        _gameManager = world.Get<GameManager>();
-        _spriteBatch = new SpriteBatch(_graphicsManager.GraphicsDevice);
-    }
+    private readonly GraphicsManager _graphicsManager = world.Get<GraphicsManager>();
+    private readonly GameManager _gameManager = world.Get<GameManager>();
 
     public void Update(float totalSeconds)
     {
@@ -28,30 +20,17 @@ public class WorldRenderer : ISystem<float>
         Point offset = visibleWindow.UpperLeft.ToOffset(tileSize);
 
         RectangleBrush rectangles = _graphicsManager.Rectangles;
-        _spriteBatch.Begin();
 
         // Render floors
         foreach (TileInfo tile in visibleWindow.VisibleTiles)
         {
-            rectangles.Render(tile.Pos.ToRectangle(tileSize, offset), tile.GetTileColor(), _spriteBatch);
+            rectangles.Render(tile.Pos.ToRectangle(tileSize, offset), tile.GetTileColor(), spriteBatch);
         }
-
-        // Render objects
-        /*
-        foreach (GameObject obj in visibleWindow.VisibleObjects)
-        {
-            rectangles.Render(obj.Pos.ToRectangle(tileSize, offset), Color.Yellow, _spriteBatch);
-        }
-        */
-
-        _spriteBatch.End();
     }
 
     public bool IsEnabled { get; set; } = true;
-
     public void Dispose()
     {
-        _spriteBatch.Dispose();
         GC.SuppressFinalize(this);
     }
 }

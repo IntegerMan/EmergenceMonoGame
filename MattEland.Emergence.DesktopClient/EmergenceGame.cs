@@ -1,4 +1,5 @@
-﻿using DefaultEcs.System;
+﻿using System;
+using DefaultEcs.System;
 using DefaultEcs.Threading;
 using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.ECS.Systems;
@@ -8,6 +9,7 @@ using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 
 namespace MattEland.Emergence.DesktopClient;
@@ -19,6 +21,7 @@ public class EmergenceGame : Game
     private ISystem<float>? _renderSystem;
     private ISystem<float>? _updateSystem;
     private readonly DefaultEcs.World _world;
+    private SpriteBatch? _spriteBatch;
 
     public EmergenceGame(IWorldService worldService, ILevelGenerator levelGenerator,
         IOptionsSnapshot<GraphicsSettings> graphics)
@@ -51,25 +54,29 @@ public class EmergenceGame : Game
         _world.Set(Content);
     }
 
-    protected override void Initialize()
+    private void InitializeEntityComponentSystem()
     {
+        if (_spriteBatch is null) throw new InvalidOperationException("SpriteBatch not initialized");
+        
         _updateSystem = new SequentialSystem<float>(
             new LevelManagementSystem(_world),
             new PlayerControlKeyboardInputSystem(_world),
             new QuitOnEscapeKeypressInputSystem(_world)
         );
         _renderSystem = new SequentialSystem<float>(
-            new WorldRenderer(_world),
-            new GameObjectRenderer(_world),
-            new VersionNumberRenderer(_world),
-            new FramesPerSecondRenderer(_world)
+            new WorldRenderer(_world, _spriteBatch),
+            new GameObjectRenderer(_world, _spriteBatch),
+            new VersionNumberRenderer(_world, _spriteBatch),
+            new FramesPerSecondRenderer(_world, _spriteBatch)
         );
-
-        base.Initialize();
     }
 
     protected override void LoadContent()
     {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        InitializeEntityComponentSystem();
+
         _gameManager.Viewport = _graphicsManager.CalculateViewport();
 
         // Load renderers and other content
@@ -94,8 +101,10 @@ public class EmergenceGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
+        _spriteBatch!.Begin();
         _renderSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-
+        _spriteBatch.End();
+        
         base.Draw(gameTime);
     }
 
@@ -106,6 +115,7 @@ public class EmergenceGame : Game
             _graphicsManager.Dispose();
             _renderSystem?.Dispose();
             _updateSystem?.Dispose();
+            _spriteBatch?.Dispose();
             _world.Dispose();
         }
 

@@ -11,18 +11,10 @@ using Point = Microsoft.Xna.Framework.Point;
 namespace MattEland.Emergence.DesktopClient.ECS.Systems.Renderers;
 
 [With(typeof(GameObjectComponent))]
-public class GameObjectRenderer : AEntitySetSystem<float>
+public class GameObjectRenderer(DefaultEcs.World world, SpriteBatch spriteBatch) : AEntitySetSystem<float>(world)
 {
-    private readonly GraphicsManager _graphicsManager;
-    private readonly GameManager _gameManager;
-    private readonly SpriteBatch _spriteBatch;
-
-    public GameObjectRenderer(DefaultEcs.World world) : base(world)
-    {
-        _graphicsManager = world.Get<GraphicsManager>();
-        _gameManager = world.Get<GameManager>();
-        _spriteBatch = new SpriteBatch(_graphicsManager.GraphicsDevice);
-    }
+    private readonly GraphicsManager _graphicsManager = world.Get<GraphicsManager>();
+    private readonly GameManager _gameManager = world.Get<GameManager>();
 
     protected override void Update(float state, ReadOnlySpan<Entity> entities)
     {
@@ -31,20 +23,11 @@ public class GameObjectRenderer : AEntitySetSystem<float>
         ViewportData visibleWindow = _gameManager.VisibleWindow ?? throw new InvalidOperationException("Visible window not set");
         Point offset = visibleWindow.UpperLeft.ToOffset(tileSize);
      
-        _spriteBatch.Begin();
         foreach (var entity in entities)
         {
             GameObjectComponent obj = entity.Get<GameObjectComponent>();
             GameObject gameObject = obj.GameObject;
-            rectangles.Render(gameObject.Pos.ToRectangle(tileSize, offset), obj.RenderColor, _spriteBatch);
+            rectangles.Render(gameObject.Pos.ToRectangle(tileSize, offset), obj.RenderColor, spriteBatch);
         }
-        _spriteBatch.End();
-    }
-
-    public override void Dispose()
-    {
-        _spriteBatch.Dispose();
-        
-        base.Dispose();
     }
 }
