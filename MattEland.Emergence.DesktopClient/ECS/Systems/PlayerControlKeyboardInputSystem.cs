@@ -20,15 +20,9 @@ public class PlayerControlKeyboardInputSystem(Player player, GameManager gameMan
 
     public void Update(GameTime gameTime)
     {
-        KeyboardExtended.Update();
         KeyboardStateExtended keyState = KeyboardExtended.GetState();
 
         bool affectedState = false;
-
-        if (keyState.WasKeyPressed(Keys.Escape))
-        {
-            gameManager.ExitRequested = true;
-        }
         
         if (keyState.WasKeyPressed(Keys.W) || keyState.WasKeyPressed(Keys.Up))
         {

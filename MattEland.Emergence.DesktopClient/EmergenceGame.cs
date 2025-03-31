@@ -6,6 +6,7 @@ using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended.Input;
 
 namespace MattEland.Emergence.DesktopClient;
 
@@ -49,6 +50,7 @@ public class EmergenceGame : Game
         world.Set(_gameManager);
 
         _updateSystem = new SequentialSystem<float>(
+            new QuitOnEscapeKeypressInputSystem(world)
             //new PlayerControlKeyboardInputSystem(_player, _gameManager, _worldService),
         );
         _renderSystem = new SequentialSystem<float>(
@@ -88,6 +90,7 @@ public class EmergenceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
+        KeyboardExtended.Update();
         _updateSystem!.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
         _gameManager.Update(gameTime);
