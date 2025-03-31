@@ -1,5 +1,5 @@
 namespace MattEland.Emergence.World.Models;
 
-public class Player(WorldPos pos) : GameObject(pos)
+public class Player(Pos2D pos) : Actor(pos, ActorType.Player)
 {
 }

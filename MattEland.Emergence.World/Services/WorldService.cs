@@ -19,13 +19,13 @@ public class WorldService(ILevelGenerator levelGenerator) : IWorldService
         if (Level is null) throw new InvalidOperationException("No level loaded");
         
         // We need an origin we're viewing from. Set that to the player's position
-        WorldPos pos = Player.Pos;
+        Pos2D pos = Player.Pos;
         
         // Figure out upper left and lower right corners of the viewport
         int halfViewportWidth = viewport.Width / 2;
         int halfViewportHeight = viewport.Height / 2;
-        WorldPos upperLeft = new(pos.X - halfViewportWidth, pos.Y - halfViewportHeight);
-        WorldPos lowerRight = upperLeft.Offset(viewport.Width - 1, viewport.Height - 1);
+        Pos2D upperLeft = new(pos.X - halfViewportWidth, pos.Y - halfViewportHeight);
+        Pos2D lowerRight = upperLeft.Offset(viewport.Width - 1, viewport.Height - 1);
         
         return new ViewportData
         {
@@ -36,19 +36,19 @@ public class WorldService(ILevelGenerator levelGenerator) : IWorldService
         };
     }
 
-    public Player Player => _player ??= new Player(new WorldPos(0, 0));
+    public Player Player => _player ??= new Player(new Pos2D(0, 0));
     
     public Level? Level { get; private set; }
   
     public (Level level, Player player) StartWorld()
     {
-        _player = new Player(new WorldPos(0, 0));
+        _player = new Player(new Pos2D(0, 0));
         Level = levelGenerator.Generate(_player);
         
         return (Level, _player);
     }
 
-    private static List<TileInfo> PopulateVisibleTiles(Level level, ViewportDimensions viewport, WorldPos upperLeft, WorldPos lowerRight)
+    private static List<TileInfo> PopulateVisibleTiles(Level level, ViewportDimensions viewport, Pos2D upperLeft, Pos2D lowerRight)
     {
         List<TileInfo> visibleTiles = new(viewport.Width * viewport.Height);
 
@@ -56,7 +56,7 @@ public class WorldService(ILevelGenerator levelGenerator) : IWorldService
         {
             for (int x = upperLeft.X; x <= lowerRight.X; x++)
             {
-                WorldPos pos = new(x, y);
+                Pos2D pos = new(x, y);
                 visibleTiles.Add(new TileInfo
                 {
                     Pos = pos,
@@ -68,7 +68,7 @@ public class WorldService(ILevelGenerator levelGenerator) : IWorldService
         return visibleTiles;
     }
 
-    private static bool IsInViewport(WorldPos pos, WorldPos upperLeft, WorldPos lowerRight) =>
+    private static bool IsInViewport(Pos2D pos, Pos2D upperLeft, Pos2D lowerRight) =>
         pos.X >= upperLeft.X && pos.X <= lowerRight.X &&
         pos.Y >= upperLeft.Y && pos.Y <= lowerRight.Y;
 }

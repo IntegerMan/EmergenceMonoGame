@@ -1,6 +1,6 @@
 namespace MattEland.Emergence.World.Models;
 
-public abstract class GameObject(WorldPos pos)
+public abstract class GameObject(Pos2D pos)
 {
-    public WorldPos Pos { get; set; } = pos;
+    public Pos2D Pos { get; set; } = pos;
 }
