@@ -1,3 +1,5 @@
+using MattEland.Emergence.World.Entities;
+
 namespace MattEland.Emergence.Tests.Services;
 
 [TestSubject(typeof(TestLevelGenerator))]
@@ -8,7 +10,7 @@ public class LevelServiceTests
     {
         // Arrange
         TestLevelGenerator generator = new();
-        Player player = new(new WorldPos(0, 0));
+        Player player = new(new Pos2D(0, 0));
 
         // Act
         Level level = generator.Generate(player);
@@ -16,6 +18,6 @@ public class LevelServiceTests
         // Assert
         level.ShouldNotBeNull();
         level.Objects.ShouldContain(player);
-        player.Pos.ShouldBe(new WorldPos(2, 3));
+        player.Pos.ShouldBe(new Pos2D(2, 3));
     }
 }

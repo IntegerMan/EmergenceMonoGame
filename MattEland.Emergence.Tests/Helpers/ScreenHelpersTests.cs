@@ -9,7 +9,7 @@ public class ScreenHelpersTests
     public void ToRectangle_ReturnsCorrectRectangle_ForPositiveCoordinates()
     {
         // Arrange
-        WorldPos pos = new(2, 3);
+        Pos2D pos = new(2, 3);
         Point offset = new(0, 0);
         
         // Act
@@ -23,7 +23,7 @@ public class ScreenHelpersTests
     public void ToRectangle_ReturnsCorrectRectangle_ForNegativeCoordinates()
     {
         // Arrange
-        WorldPos pos = new(-1, -2);
+        Pos2D pos = new(-1, -2);
         Point offset = new(0, 0);
         
         // Act
@@ -37,7 +37,7 @@ public class ScreenHelpersTests
     public void ToRectangle_ReturnsCorrectRectangle_ForZeroCoordinates()
     {
         // Arrange
-        WorldPos pos = new(0, 0);
+        Pos2D pos = new(0, 0);
         Point offset = new(0, 0);
 
         // Act

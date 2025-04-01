@@ -10,7 +10,7 @@ public class ColorHelpersTests
         TileInfo tile = new()
         {
             Floor = FloorType.Void,
-            Pos = new WorldPos(0, 0)
+            Pos = new Pos2D(0, 0)
         };
 
         // Act
@@ -27,7 +27,7 @@ public class ColorHelpersTests
         TileInfo tile = new()
         {
             Floor = FloorType.Normal,
-            Pos = new WorldPos(0, 0)
+            Pos = new Pos2D(0, 0)
         };
 
         // Act
@@ -44,7 +44,7 @@ public class ColorHelpersTests
         TileInfo tile = new()
         {
             Floor = FloorType.Virus,
-            Pos = new WorldPos(0, 0)
+            Pos = new Pos2D(0, 0)
         };
 
         // Act
@@ -61,7 +61,7 @@ public class ColorHelpersTests
         TileInfo tile = new()
         {
             Floor = FloorType.Wilderness,
-            Pos = new WorldPos(0, 0)
+            Pos = new Pos2D(0, 0)
         };
 
         // Act
@@ -80,7 +80,7 @@ public class ColorHelpersTests
             TileInfo tile = new()
             {
                 Floor = (FloorType)(-50),
-                Pos = new WorldPos(0, 0)
+                Pos = new Pos2D(0, 0)
             };
 
             // Act

@@ -1,3 +1,4 @@
+using MattEland.Emergence.World.Entities;
 using MattEland.Emergence.World.Models;
 
 namespace MattEland.Emergence.World.Services;

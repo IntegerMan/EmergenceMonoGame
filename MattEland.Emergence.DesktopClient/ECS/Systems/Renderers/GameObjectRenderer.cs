@@ -4,6 +4,7 @@ using MattEland.Emergence.DesktopClient.Brushes;
 using MattEland.Emergence.DesktopClient.Configuration;
 using MattEland.Emergence.DesktopClient.ECS.Components;
 using MattEland.Emergence.DesktopClient.Helpers;
+using MattEland.Emergence.World.Entities;
 using Entity = DefaultEcs.Entity;
 using Point = Microsoft.Xna.Framework.Point;
 

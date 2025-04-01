@@ -43,10 +43,12 @@ public class EmergenceGame : Game
         
         // Set up graphics management
         _graphicsManager = new GraphicsDeviceManager(this);
+        _graphicsManager.SynchronizeWithVerticalRetrace = true; // Turn on VSync because it helps with performance and reduces screen tearing
         if (_graphicsOptions.StartFullscreen)
         {
             Maximize();
         }
+        _graphicsManager.ApplyChanges();
         
         _worldService = worldService;
         _gameManager = new GameManager(worldService);
@@ -188,6 +190,6 @@ public class EmergenceGame : Game
         _graphicsManager.PreferredBackBufferWidth = displayMode.Width;
         _graphicsManager.PreferredBackBufferHeight = displayMode.Height;
         _graphicsManager.IsFullScreen = true;
-        _graphicsManager.ApplyChanges();
+
     }
 }

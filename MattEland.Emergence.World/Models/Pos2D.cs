@@ -1,9 +1,9 @@
 namespace MattEland.Emergence.World.Models;
 
-public record WorldPos(int X, int Y)
+public record Pos2D(int X, int Y)
 {
-    public WorldPos Offset(int x, int y) => new(X + x, Y + y);
-    public WorldPos Offset(Direction direction) 
+    public Pos2D Offset(int x, int y) => new(X + x, Y + y);
+    public Pos2D Offset(Direction direction) 
         => direction switch
         {
             Direction.Up => Offset(0, -1),

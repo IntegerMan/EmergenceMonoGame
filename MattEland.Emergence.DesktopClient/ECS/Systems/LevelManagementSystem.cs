@@ -1,6 +1,7 @@
 using System;
 using DefaultEcs.System;
 using MattEland.Emergence.DesktopClient.ECS.Components;
+using MattEland.Emergence.World.Entities;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Entity = DefaultEcs.Entity;
@@ -21,11 +22,19 @@ public class LevelManagementSystem : ISystem<float>
     private void LoadLevel()
     {
         IWorldService worldService = _world.Get<IWorldService>();
-        Player player = worldService.Player;
+        Level? level = worldService.Level;
         
-        Entity playerEntity = _world.CreateEntity();
-        playerEntity.Set(new GameObjectComponent(player));
-        playerEntity.Set<PlayerMovementComponent>();
+        if (level is null) throw new InvalidOperationException("Level not loaded");
+        
+        foreach (var obj in level.Objects)
+        {
+            Entity entity = _world.CreateEntity();
+            entity.Set(new GameObjectComponent(obj));
+            if (obj is Player)
+            {
+                entity.Set<PlayerMovementComponent>();
+            }
+        }
     }
 
     public void Update(float state)

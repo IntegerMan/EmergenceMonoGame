@@ -1,3 +1,4 @@
+using MattEland.Emergence.LevelGeneration;
 using MattEland.Emergence.World.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,7 @@ public static class DependencyInjectionConfiguration
 
         services.AddScoped<EmergenceGame>();
         services.AddScoped<IWorldService, WorldService>();
-        services.AddScoped<ILevelGenerator, TestLevelGenerator>();
+        services.AddScoped<ILevelGenerator, TestLevelLevelGenerator>();
 
         // Bind GraphicsSettings to the "Graphics" node in configuration
         services.Configure<GraphicsSettings>(options => configuration.GetSection("Graphics").Bind(options));

@@ -3,6 +3,7 @@ using DefaultEcs.System;
 using MattEland.Emergence.DesktopClient.ECS.Components;
 using MattEland.Emergence.DesktopClient.ECS.Messages;
 using MattEland.Emergence.World;
+using MattEland.Emergence.World.Entities;
 using MattEland.Emergence.World.Models;
 using MattEland.Emergence.World.Services;
 using Microsoft.Xna.Framework.Input;

@@ -1,3 +1,4 @@
+using MattEland.Emergence.World.Entities;
 using Moq;
 
 namespace MattEland.Emergence.Tests.Services;
@@ -16,7 +17,7 @@ public class WorldServiceTests
 
         // Assert
         player.ShouldNotBeNull();
-        player.Pos.ShouldBe(new WorldPos(0, 0));
+        player.Pos.ShouldBe(new Pos2D(0, 0));
     }
     
     [Fact]
